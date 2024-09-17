@@ -2,3 +2,26 @@ p {
     color: rgb(13, 121, 22);
     background-color: rgb(3, 150, 235);
 }
+
+body {
+    background-color:rgb(11, 102, 145);
+}
+
+strong {
+    padding: 1em;
+    margin: 1em;
+    border: 1px solid;
+    display: inline-block;
+    align-self: middle;
+  }
+
+h1 {
+    align-items: center;
+    position: sticky;
+    top: 30px;
+    left: 30px;
+}
+.sticky {
+    z-index: 10;
+    background-color: black;
+}
