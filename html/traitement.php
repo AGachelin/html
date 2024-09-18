@@ -84,8 +84,8 @@
             <div class="row">
               <div class="col-md-6">Jean <b>Loutre</b></div>
               <div class="col-md-6"> <i>Loutre professionnelle</i> </div>
-              <div class="col-12">jean.loutre@centrale-assos.fr</div>
-              <div class="col-12">+33 6 12 34 56 78</div>
+              <div class="col-12">jean.loutre@mail.fr</div>
+              <div class="col-12">+33 6 01 01 01 01</div>
               <div class="col-12 text-center">
                 <img src="images/qr.png" alt="">
               </div>
