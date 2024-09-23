@@ -8,8 +8,8 @@ body {
 }
 
 strong {
-    padding: 1em;
-    margin: 1em;
+    padding: 0.5em;
+    margin: 0.5em;
     border: 1px solid;
     display: inline-block;
     align-self: middle;
@@ -21,13 +21,12 @@ strong {
 h1 {
     font-style: oblique;
     align-items: center;
-    position: sticky;
     top: 30px;
     left: 30px;
 }
 .sticky {
-    z-index: 10;
-    background-color: rgb(0, 0, 0, 0.5);
+    background-color: rgb(0, 0, 0, 0.75);
+    position: sticky;
 }
 
 a {
@@ -42,8 +41,48 @@ img {
     border: 5px solid;
   }
 
-  a:hover{
+a:hover{
     font-size: xx-large;
     background-color: rgb(7, 7, 7);
     font-family: "Libre Barcode 39 Extended Text", system-ui;
-  }
+}
+
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}
+
+#div1 {
+    position:sticky;
+    bottom: 0;
+}
+#im {
+    position: sticky;
+    background-color: rgb(3, 150, 235);
+    -webkit-animation: linear infinite;
+    -webkit-animation-name: run;
+    -webkit-animation-duration: 10s;
+}
+
+@-webkit-keyframes run {
+0% {
+    left: 0;
+    -webkit-transform: rotateY(180deg); 
+}
+48% {
+    -webkit-transform: rotateY(180deg); 
+}
+50% { 
+    left: calc(100% - 100px);
+    -webkit-transform: rotateY(0deg); 
+}
+48% {
+    -webkit-transform: rotateY(0deg); 
+}
+100% {
+    left: 0;    
+    -webkit-transform: rotateY(180deg);
+}
+}
