@@ -13,11 +13,13 @@ strong {
     border: 1px solid;
     display: inline-block;
     align-self: middle;
+    font-family: "Jacquarda Bastarda 9", serif;
+    font-weight: 400;
+    font-style: normal;
   }
 
 h1 {
     font-style: oblique;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     align-items: center;
     position: sticky;
     top: 30px;
@@ -34,3 +36,7 @@ a {
 img {
     align-items: center;
 }
+
+.jacquarda-bastarda-9-regular {
+    font-family: "Tangerine", serif;
+  }
