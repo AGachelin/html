@@ -1,0 +1,8 @@
+on: push
+jobs:
+  name: run script
+  steps:
+    -uses: action/checkout@v4
+    -uses: action/setup-python@v5 with: python-version: '3.12'
+    run:
+      python ./ssh1.py
