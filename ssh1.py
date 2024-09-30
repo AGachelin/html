@@ -6,7 +6,7 @@ password = os.environ['pw']
 username = os.environ['id']
 client = client.SSHClient()
 client.set_missing_host_key_policy(AutoAddPolicy())
-client.connect(host, username, password=password)
+client.connect(host, username, password)
 _stdin, _stdout,_stderr = client.exec_command(command)
 print(_stdout.read().decode())
 client.close()
