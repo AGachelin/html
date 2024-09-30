@@ -1,9 +1,9 @@
 from paramiko import client, AutoAddPolicy
 import os
 command = "cd html;git pull;ls"
-host = os.environ['HOST']
-password = os.environ['PW']
-username = os.environ['ID']
+host = os.environ['host']
+password = os.environ['pw']
+username = os.environ['id']
 client = client.SSHClient()
 client.set_missing_host_key_policy(AutoAddPolicy())
 client.connect(host, username, password=password)
