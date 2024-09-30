@@ -1,13 +1,14 @@
 on: push
 jobs:
   run-script:
-  steps:
-    -uses: actions/checkout@v4
-    -name: setup python
-     uses: actions/setup-python@v5 
-     with:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
         python-version: '3.12'
-    -name: install paramiko
-     run: python -m pip install --upgrade pip paramiko
-    -name: run script
-    run: python ./ssh1.py
+    - name: install paramiko
+      run : python -m pip install --upgrade pip paramiko
+    - name: run script
+      run: python ./ssh1.py
