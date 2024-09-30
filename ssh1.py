@@ -1,6 +1,6 @@
 from paramiko import client, AutoAddPolicy
 import os
-command = "cd html;git pull;ls"
+command = "cd html;git pull"
 host = os.environ['host']
 password = os.environ['pw']
 username = os.environ['id']
