@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <title>Magie javascript : un timer</title>
+    </head>
+    <body>
+        <h1> Compteur</h1>
+        <p id="compte1">0</p>
+        <p id="compte"></p>
+        <script>
+            let compte = 0
+            document
+                .getElementById("compte1")
+                .onclick = () => {
+                    compte += 1;
+                    document
+                        .getElementById("compte1")
+                        .innerHTML = compte;
+                }
+            setInterval(() => {
+                let color = "#" + Math
+                    .floor(Math.random() * 0xffffff)
+                    .toString(16)
+                document
+                    .getElementById("compte")
+                    .innerHTML += '<span style="color:' + color + ';\">' + 'coucou !'.repeat(compte) +' </span>'
+            }, 1)
+        </script>
+    </body>
+</html>
+
+
