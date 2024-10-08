@@ -5,6 +5,6 @@ class Player{
     }
     jouer(){
         this.tentative++
-        this.current_tentative=new
+        this.current_tentative=new Tentative()
     }
 }
