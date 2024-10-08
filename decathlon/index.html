@@ -7,7 +7,7 @@
         <title>Décathlon</title>
     </head>
     <body>
-        <div>
+        <div id="div1">
             <h1> Lancer de disque </h1>
             <h4>Règles</h4>
             <div>Commencez par lancer les 5 dés. Écartez alors au moins un dé. Si vous le désirez, relancez tous les autres. Vous
@@ -17,7 +17,10 @@
                 tentative s’achève automatiquement dès que les cinq dés se trouvent écartés.
                 Si, après un lancer, vous n’êtes plus en mesure d’écarter un nouveau dé parce que tous montrent une valeur
                 impaire, vous avez échoué dans votre tentative.</div>
-            <button type="submit" id="form-button" class="pure-button pure-button-primary">Jouer</button>
+            <button type="submit" id="play-button" class="pure-button pure-button-primary">Jouer</button>
+        </div>
+        <div id="div2" style="diplay:'none">
+            <button type="submit" id="done-button" class="pure-button pure-button-primary">Terminer la partie</button>
         </div>
     </body>
     <script src="./script/main.js"></script>
