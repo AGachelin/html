@@ -1,19 +1,20 @@
-class Dice{
-    constructor(number){
-        this.locked = false
-        this.number = number
-    }
-    remove_dice(){
-        this.locked = true
-    }
+class Dice {
+	constructor(number) {
+		this.locked = false;
+		this.number = number;
+	}
 
-}
+	remove_dice() {
+		this.locked = true;
+	}
 
-function throw_dices(){
-}
+	throw_dice() {
+		if (!this.locked) {
+			this.number = Math.floor(Math.random() * 6) + 1;
+		}
+	}
 
-function start_tentative(){
-}
-
-function end_tentative(){
+	get value() {
+		return this.number;
+	}
 }
