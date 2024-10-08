@@ -39,3 +39,10 @@ function chiffreAssocie(chaîne) {
 
 // console.log(nombre("coucou"))
 // console.log(chiffreAssocie("coucou"))
+
+document.querySelector("#form-button").addEventListener("click", (event) => {
+    let chaîne = document.querySelector("#form-input").value;
+    let chiffre = chiffreAssocie(chaîne);
+    document.querySelector("#chiffre").textContent = chiffre;
+    event.preventDefault();
+})
