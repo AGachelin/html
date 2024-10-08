@@ -1,18 +1,23 @@
 <!doctype html>
 <html lang="fr">
-
-<head>
-    <link rel="stylesheet" href="./style.css">
-    <meta charset="utf-8">
-    <title>Décathlon</title>
-</head>
-
-<body>
-    <div>
-        <h1> Lancer de disque </h1>
-        <button type="submit" id="form-button" class="pure-button pure-button-primary">Jouer</button>
-    </div>
-</body>
-<script src="script.js"></script>
-
+    <head>  
+        <link rel="stylesheet" href="./style.css">
+        <meta charset="utf-8">
+        <title>Décathlon</title>
+    </head>
+    <body>
+        <div>
+            <h1> Lancer de disque </h1>
+            <h4>Règles</h4>
+            <div>Commencez par lancer les 5 dés. Écartez alors au moins un dé. Si vous le désirez, relancez tous les autres. Vous
+                pouvez réitérer l’opération plusieurs fois, à la condition de toujours écarter au moins un dé à chaque coup. Mais
+                attention : seuls les dés de valeur paire peuvent être écartés. Essayez de conserver les dés de valeur élevée.
+                À tout moment, vous pouvez décider d’interrompre vos lancers et de conclure là votre tentative. Par ailleurs une
+                tentative s’achève automatiquement dès que les cinq dés se trouvent écartés.
+                Si, après un lancer, vous n’êtes plus en mesure d’écarter un nouveau dé parce que tous montrent une valeur
+                impaire, vous avez échoué dans votre tentative.</div>
+            <button type="submit" id="form-button" class="pure-button pure-button-primary">Jouer</button>
+        </div>
+    </body>
+    <script src="dice.js"></script>
 </html>
