@@ -4,14 +4,11 @@ export class Dice {
 		this.#value = Math.floor(Math.random() * 6) + 1;
 		this.cube = new THREE.Mesh(
 			new THREE.BoxGeometry(1, 1, 1),
-			new THREE.MeshBasicMaterial({ color: "blue" }),
+			new THREE.MeshPhongMaterial({ color: "blue" }),
 		);
-        this.locked = false;
 	}
-	value() {
-		return this.#value;
-	}
-	throw() {
+	throw(show) { // this method must return the score of the dice
 		this.#value = Math.floor(Math.random() * 6) + 1;
+        return this.#value;
 	}
 }
