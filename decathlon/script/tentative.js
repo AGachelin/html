@@ -17,11 +17,12 @@ class Tentative {
 			this.not_locked_dices.push(this.dices[i]);
 		}
 		this.score = 0;
+		this.initialized = false;
 	}
-	show() {
+	init_scene() {
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
-		this.scene.background = new THREE.Color("#161718");
-		document.body.appendChild(this.renderer.domElement);
+		this.scene.background = new THREE.Color("#000000");
+		document.getElementById("dicethrow").appendChild(this.renderer.domElement);
 		this.dices.forEach((x, i) => {
 			x.cube.position.set(i * 3, 0, 0);
 			this.scene.add(x.cube);
@@ -30,9 +31,17 @@ class Tentative {
 		this.scene.add(light);
 		this.camera.position.z = 6;
 		this.camera.position.x = 6;
+	}
+	show() {
+		if (!this.initialized) {
+			this.init_scene();
+			this.initialized = true;
+		}
 		this.renderer.render(this.scene, this.camera);
 	}
-	start_turn() {}
+	start_turn() {
+		// this.not_locked_dices.forEach((x) => x.throw());
+	}
 }
 
 console.log("show");
