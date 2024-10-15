@@ -1,6 +1,6 @@
 class Dice {
 	#value;
-    cube;
+	cube;
 	constructor() {
 		this.#value = Math.floor(Math.random() * 6) + 1;
 		this.cube = new THREE.Mesh(
@@ -45,8 +45,8 @@ camera.position.z = 5;
 
 const control = new THREE.OrbitControls(camera, renderer.domElement);
 const drag = () => {
-    control.update();
-}
+	control.update();
+};
 drag();
 
 renderer.render(scene, camera);
