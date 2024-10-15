@@ -5,7 +5,7 @@ export class Dice {
 		function loadModel(){
 			this.cube = cube;
 			this.cube.position.set(i-2, 0, 0);
-			this.cube.scale.setScalar( 0.5 );
+			this.cube.scale.setScalar( 0.3 );
 			scene.add(cube);
 		  }
 		this.manager = new THREE.LoadingManager( loadModel );
@@ -23,10 +23,8 @@ export class Dice {
 			}
 		}
 	}
-	value() {
-		return this.#value;
-	}
-	throw() {
+	throw(show) { // this method must return the score of the dice
 		this.#value = Math.floor(Math.random() * 6) + 1;
+        return this.#value;
 	}
 }

@@ -8,12 +8,17 @@ class Tentative {
 		0.1,
 		1000,
 	);
-	renderer = new THREE.WebGLRenderer( { antialias: true } );
+	renderer = new THREE.WebGLRenderer();
+
+	pointer = new THREE.Vector2();
+	raycaster = new THREE.Raycaster();
+
 	constructor() {
 		this.show = this.show.bind(this);
 		this.initialized = false;
 		this.dices = [];
 		this.not_locked_dices = [];
+		this.locked_dices = [];
 		for (let i = 0; i < 5; i++) {
 			this.dices.push(new Dice(i, this.scene));
 			this.not_locked_dices.push(this.dices[i]);
@@ -50,10 +55,36 @@ class Tentative {
 		this.renderer.render(this.scene, this.camera);
 	}
 	start_turn() {
-		// this.not_locked_dices.forEach((x) => x.throw());
+		scores = [0, 0, 0, 0, 0, 0];
+		for (let i = 0; i < this.not_locked_dices.length; i++) {
+			scores[i] = this.not_locked_dices[i].throw(this.show);
+			this.score += scores[i];
+		}
+		dice_selected = selector();
+		if (dice_selected !== -1) {
+			this.locked_dices.push(this.not_locked_dices.splice(dice_selected, 1));
+			return false;
+		}
+		return true;
+	}
+	selector() {
+		const onMouse = (event) => {
+			this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+			this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+			this.raycaster.setFromCamera(this.pointer, this.camera);
+			const intersects = this.raycaster.intersectObjects(this.scene.children);
+			for (let i = 0; i < intersects.length; i++) {
+				intersects[i].object.material.color.set("red");
+				console.log(intersects[i].object);
+			}
+			this.show();
+		};
+		window.addEventListener("click", onMouse);
 	}
 }
 
-console.log("show");
 const tentative = new Tentative();
+tentative.init_scene();
+tentative.selector();
 tentative.show();
