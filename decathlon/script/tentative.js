@@ -1,6 +1,6 @@
 import { Dice } from "./dice.js";
+
 class Tentative {
-	camera; scene; renderer; initialized;
 	scene = new THREE.Scene();
 	camera = new THREE.PerspectiveCamera(
 		75,
@@ -27,7 +27,7 @@ class Tentative {
 		this.score = 0;
 	}
 	init_scene() {
-		this.renderer.setPixelRatio( window.devicePixelRatio );
+		this.renderer.setPixelRatio(window.devicePixelRatio);
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
 		this.scene.background = new THREE.Color("#000000");
 		document.getElementById("dicethrow").appendChild(this.renderer.domElement);
@@ -42,10 +42,13 @@ class Tentative {
 		this.scene.add(light);
 		this.camera.position.z = 6;
 		this.camera.position.x = 6;
-		const controls = new THREE.OrbitControls( this.camera, this.renderer.domElement );
+		const controls = new THREE.OrbitControls(
+			this.camera,
+			this.renderer.domElement,
+		);
 		controls.minDistance = 2;
 		controls.maxDistance = 5;
-		controls.addEventListener('change',this.show);
+		controls.addEventListener("change", this.show);
 	}
 	show() {
 		if (!this.initialized) {
