@@ -12,6 +12,7 @@ class Tentative {
 
 	pointer = new THREE.Vector2();
 	raycaster = new THREE.Raycaster();
+    selectedDice;
 
 	constructor() {
 		this.show = this.show.bind(this);
@@ -26,7 +27,7 @@ class Tentative {
 		}
 		this.score = 0;
 	}
-    orbitControls() {
+	orbitControls() {
 		const controls = new THREE.OrbitControls(
 			this.camera,
 			this.renderer.domElement,
@@ -34,7 +35,7 @@ class Tentative {
 		controls.minDistance = 2;
 		controls.maxDistance = 5;
 		controls.addEventListener("change", this.show);
-    }
+	}
 	async init_scene() {
 		this.renderer.setPixelRatio(window.devicePixelRatio);
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -45,11 +46,6 @@ class Tentative {
 		this.camera.position.z = 6;
 		this.camera.position.x = 6;
 
-        this.cube = new THREE.Mesh(
-            new THREE.BoxGeometry(1, 1, 1),
-            new THREE.MeshBasicMaterial({ color: 0x00ff00 }),
-        );
-
 		await Promise.all(this.not_locked_dices.map((dice) => dice.loadModel()));
 
 		for (let i = 0; i < this.not_locked_dices.length; i++) {
@@ -57,12 +53,10 @@ class Tentative {
 			this.dices[i].cube.rotation.set(0, 0, 0);
 			this.dices[i].cube.traverse((mesh) => {
 				mesh.material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
-			  });
-            this.scene.add(this.dices[i].cube);
+			});
+			this.scene.add(this.dices[i].cube);
 		}
-        this.cube.position.set(0, 2, 0);
-        this.scene.add(this.cube);
-        this.orbitControls();
+		this.orbitControls();
 	}
 
 	show() {
@@ -90,15 +84,22 @@ class Tentative {
 			this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
 			this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
 			this.raycaster.setFromCamera(this.pointer, this.camera);
-			const intersects = this.raycaster.intersectObjects(this.scene.children, true);
-			console.log(intersects);
-			for (let i = 0; i < intersects.length; i++) {
-				intersects[i].object.traverse((mesh) => {
-					mesh.material.color.set("red");
-				  });
-				console.log(intersects[i].object);
-			}
-			this.show();
+			const intersects = this.raycaster.intersectObjects(
+				this.scene.children,
+				true,
+			);
+            if (intersects.length !== 0) {
+                this.selectedDice = intersects[0].object;
+                for(let i = 0; i < this.not_locked_dices.length; i++) {
+                    this.not_locked_dices[i].cube.traverse((mesh) => {
+                        mesh.material.color.set("lime");
+                    });
+                }
+                this.selectedDice.traverse((mesh) => {
+                    mesh.material.color.set("red");
+                });
+            }
+            this.show();
 		};
 		window.addEventListener("click", onMouse);
 	}
