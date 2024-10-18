@@ -55,6 +55,9 @@ class Tentative {
 		for (let i = 0; i < this.not_locked_dices.length; i++) {
 			this.dices[i].cube.position.set(i - 2, 0, 0);
 			this.dices[i].cube.rotation.set(0, 0, 0);
+			this.dices[i].cube.traverse((mesh) => {
+				mesh.material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+			  });
             this.scene.add(this.dices[i].cube);
 		}
         this.cube.position.set(0, 2, 0);
@@ -86,12 +89,13 @@ class Tentative {
 		const onMouse = (event) => {
 			this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
 			this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
 			this.raycaster.setFromCamera(this.pointer, this.camera);
-			const intersects = this.raycaster.intersectObjects(this.scene.children);
+			const intersects = this.raycaster.intersectObjects(this.scene.children, true);
 			console.log(intersects);
 			for (let i = 0; i < intersects.length; i++) {
-				intersects[i].object.material.color.set("red");
+				intersects[i].object.traverse((mesh) => {
+					mesh.material.color.set("red");
+				  });
 				console.log(intersects[i].object);
 			}
 			this.show();
