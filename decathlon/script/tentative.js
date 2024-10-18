@@ -20,28 +20,29 @@ class Tentative {
 		this.not_locked_dices = [];
 		this.locked_dices = [];
 		for (let i = 0; i < 5; i++) {
-			this.dices.push(new Dice(i, this.scene));
+			this.dices.push(new Dice(this.scene));
 			this.not_locked_dices.push(this.dices[i]);
 			this.show();
 		}
 		this.score = 0;
 	}
-	init_scene() {
+	async init_scene() {
 		this.renderer.setPixelRatio(window.devicePixelRatio);
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
 		this.scene.background = new THREE.Color("#000000");
 		document.getElementById("dicethrow").appendChild(this.renderer.domElement);
-		// this.dices.forEach((x, i) => {
-		// 	x.cube.position.y = - 0.95;
-		// 	x.cube.scale.setScalar( 0.01 );
-		// 	scene.add(x.cube);
-		// 	// x.cube.position.set(i * 3, 0, 0);
-		// 	// this.scene.add(x.cube);
-		// });
 		const light = new THREE.HemisphereLight("#FFFFFF", "#757575", 0.5);
 		this.scene.add(light);
 		this.camera.position.z = 6;
 		this.camera.position.x = 6;
+
+		await Promise.all(this.not_locked_dices.map((dice) => dice.loadModel()));
+
+		for (let i = 0; i < this.not_locked_dices.length; i++) {
+			this.dices[i].cube.position.set(i - 2, 0, 0);
+            this.dices[i].cube.rotation.set(1, 1, 1 + i);
+		}
+
 		const controls = new THREE.OrbitControls(
 			this.camera,
 			this.renderer.domElement,
@@ -77,6 +78,7 @@ class Tentative {
 
 			this.raycaster.setFromCamera(this.pointer, this.camera);
 			const intersects = this.raycaster.intersectObjects(this.scene.children);
+            console.log(intersects)
 			for (let i = 0; i < intersects.length; i++) {
 				intersects[i].object.material.color.set("red");
 				console.log(intersects[i].object);
