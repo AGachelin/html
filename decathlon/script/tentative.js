@@ -26,6 +26,15 @@ class Tentative {
 		}
 		this.score = 0;
 	}
+    orbitControls() {
+		const controls = new THREE.OrbitControls(
+			this.camera,
+			this.renderer.domElement,
+		);
+		controls.minDistance = 2;
+		controls.maxDistance = 5;
+		controls.addEventListener("change", this.show);
+    }
 	async init_scene() {
 		this.renderer.setPixelRatio(window.devicePixelRatio);
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -36,21 +45,23 @@ class Tentative {
 		this.camera.position.z = 6;
 		this.camera.position.x = 6;
 
+        this.cube = new THREE.Mesh(
+            new THREE.BoxGeometry(1, 1, 1),
+            new THREE.MeshBasicMaterial({ color: 0x00ff00 }),
+        );
+
 		await Promise.all(this.not_locked_dices.map((dice) => dice.loadModel()));
 
 		for (let i = 0; i < this.not_locked_dices.length; i++) {
 			this.dices[i].cube.position.set(i - 2, 0, 0);
 			this.dices[i].cube.rotation.set(0, 0, 0);
+            this.scene.add(this.dices[i].cube);
 		}
-
-		const controls = new THREE.OrbitControls(
-			this.camera,
-			this.renderer.domElement,
-		);
-		controls.minDistance = 2;
-		controls.maxDistance = 5;
-		controls.addEventListener("change", this.show);
+        this.cube.position.set(0, 2, 0);
+        this.scene.add(this.cube);
+        this.orbitControls();
 	}
+
 	show() {
 		if (!this.initialized) {
 			this.init_scene();
