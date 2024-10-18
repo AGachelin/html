@@ -1,8 +1,7 @@
 export class Dice {
 	#value;
 	cube;
-	constructor(scene) {
-		this.scene = scene;
+	constructor() {
 		this.loadModel();
 		this.#value = Math.floor(Math.random() * 6) + 1;
 	}

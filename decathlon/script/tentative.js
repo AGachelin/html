@@ -20,7 +20,7 @@ class Tentative {
 		this.not_locked_dices = [];
 		this.locked_dices = [];
 		for (let i = 0; i < 5; i++) {
-			this.dices.push(new Dice(this.scene));
+			this.dices.push(new Dice());
 			this.not_locked_dices.push(this.dices[i]);
 			this.show();
 		}
