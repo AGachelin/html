@@ -12,7 +12,6 @@ export class Dice {
 			const loadModel = () => {
 				this.cube.position.set(0, 0, 0);
 				this.cube.scale.setScalar(0.3);
-				this.scene.add(this.cube);
 				resolve();
 			};
 

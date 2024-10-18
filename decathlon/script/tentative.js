@@ -40,7 +40,7 @@ class Tentative {
 
 		for (let i = 0; i < this.not_locked_dices.length; i++) {
 			this.dices[i].cube.position.set(i - 2, 0, 0);
-            this.dices[i].cube.rotation.set(1, 1, 1 + i);
+			this.dices[i].cube.rotation.set(0, 0, 0);
 		}
 
 		const controls = new THREE.OrbitControls(
@@ -78,7 +78,7 @@ class Tentative {
 
 			this.raycaster.setFromCamera(this.pointer, this.camera);
 			const intersects = this.raycaster.intersectObjects(this.scene.children);
-            console.log(intersects)
+			console.log(intersects);
 			for (let i = 0; i < intersects.length; i++) {
 				intersects[i].object.material.color.set("red");
 				console.log(intersects[i].object);
