@@ -1,21 +1,21 @@
 #c {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    display: block;
-    z-index: -1;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: -1;
 }
 
 .list-item {
-    display: inline-block;
-    width: 10em;
-    height: 10em;
+  display: inline-block;
+  width: 10em;
+  height: 10em;
 }
 
 #dicethrow {
-    position: absolute;
-    left: 0;
-    top: 0;
+  position: absolute;
+  left: 0;
+  top: 0;
 }
