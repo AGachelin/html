@@ -1,70 +1,72 @@
 import { Dice } from "./dice.js";
 
-class Tentative {
-	scene = new THREE.Scene();
-	camera = new THREE.PerspectiveCamera(
-		75,
-		window.innerWidth / window.innerHeight,
-		0.1,
-		1000,
-	);
-	renderer = new THREE.WebGLRenderer();
-
+export class Tentative {
+	canvas;
+	renderer;
 	pointer = new THREE.Vector2();
 	raycaster = new THREE.Raycaster();
     selectedDice;
 
 	constructor() {
 		this.show = this.show.bind(this);
-		this.initialized = false;
+		const canvas = document.getElementById( 'canvas' );
+		this.renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
 		this.dices = [];
 		this.not_locked_dices = [];
 		this.locked_dices = [];
 		for (let i = 0; i < 5; i++) {
-			this.dices.push(new Dice());
+			this.dices.push(new Dice(i));
 			this.not_locked_dices.push(this.dices[i]);
-			this.show();
 		}
 		this.score = 0;
 	}
-	orbitControls() {
+	orbitControls(cam,scene) {
 		const controls = new THREE.OrbitControls(
-			this.camera,
-			this.renderer.domElement,
+			cam,
+			scene.element,
 		);
-		controls.minDistance = 2;
-		controls.maxDistance = 5;
 		controls.addEventListener("change", this.show);
+		controls.target.set(0,0,0);
 	}
 	async init_scene() {
 		this.renderer.setPixelRatio(window.devicePixelRatio);
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
-		this.scene.background = new THREE.Color("#000000");
-		document.getElementById("dicethrow").appendChild(this.renderer.domElement);
-		const light = new THREE.HemisphereLight("#FFFFFF", "#757575", 0.5);
-		this.scene.add(light);
-		this.camera.position.z = 6;
-		this.camera.position.x = 6;
-
-		await Promise.all(this.not_locked_dices.map((dice) => dice.loadModel()));
-
+		const Promise1 = Promise.all(this.not_locked_dices.map((dice) => dice.loadModel()));
+		const Promise2 = Promise1.then((val) =>{
 		for (let i = 0; i < this.not_locked_dices.length; i++) {
-			this.dices[i].cube.position.set(i - 2, 0, 0);
-			this.dices[i].cube.rotation.set(0, 0, 0);
-			this.dices[i].cube.traverse((mesh) => {
-				mesh.material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
-			});
-			this.scene.add(this.dices[i].cube);
-		}
-		this.orbitControls();
-	}
+			const sceneElement = document.createElement( 'div' );
+			sceneElement.className = 'list-item';
+			this.dices[i].scene.element = sceneElement;
+			document.getElementById("dicethrow").appendChild(sceneElement);	
+			this.dices[i].scene.background = new THREE.Color("#000000");
+			this.dices[i].scene.add(new THREE.HemisphereLight("#FFFFFF", "#757575", 0.25)
+);
+			const light = new THREE.DirectionalLight( 0xffffff, 0.5 );
+			light.position.set( - 1, 2, 4 );
+			this.dices[i].scene.add(light);
+			this.dices[i].scene.add(this.dices[i].cube);
+			this.dices[i].camera.position.set(i-2, 1, 2);
+			this.dices[i].camera.updateProjectionMatrix();
+			this.orbitControls(this.dices[i].camera, this.dices[i].scene);
+		}})
+		return Promise2;}
 
 	show() {
-		if (!this.initialized) {
-			this.init_scene();
-			this.initialized = true;
-		}
-		this.renderer.render(this.scene, this.camera);
+		this.renderer.setScissorTest( false );
+		this.renderer.setClearColor( 0x0, 0 );
+		this.renderer.clear( true, true );
+		this.renderer.setScissorTest( true );
+		for (let i = 0; i < this.not_locked_dices.length; i++) {
+			const element = this.dices[i].scene.element;
+			const { left, right, top, bottom, width, height } =
+			element.getBoundingClientRect();
+			this.dices[i].camera.aspect = width / height;
+			const positiveYUpBottom = this.renderer.domElement.clientHeight - bottom;
+			this.renderer.setScissor( left, positiveYUpBottom, width, height );
+			this.renderer.setViewport( left, positiveYUpBottom, width, height );
+			this.dices[i].camera.lookAt(this.dices[i].scene.position.x,this.dices[i].scene.position.y,this.dices[i].scene.position.z)
+			this.dices[i].camera.updateProjectionMatrix();
+			this.renderer.render( this.dices[i].scene, this.dices[i].camera );}
 	}
 	start_turn() {
 		scores = [0, 0, 0, 0, 0, 0];
@@ -81,31 +83,26 @@ class Tentative {
 	}
 	selector() {
 		const onMouse = (event) => {
-			this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
-			this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
-			this.raycaster.setFromCamera(this.pointer, this.camera);
-			const intersects = this.raycaster.intersectObjects(
-				this.scene.children,
-				true,
-			);
+			let wid = document.getElementsByClassName("list-item").item(0).getBoundingClientRect().width;
+			this.pointer.x = (event.clientX % wid / wid) * 2 - 1;
+			this.pointer.y = -(event.clientY / document.getElementsByClassName("list-item").item(0).getBoundingClientRect().height) * 2 + 1;
+			console.log(this.pointer);
+			let i = Math.floor(event.clientX / wid);
+			this.raycaster.setFromCamera(this.pointer, this.dices[i].camera);
+			let intersects = this.raycaster.intersectObjects(
+			this.dices[i].scene.children, true);
             if (intersects.length !== 0) {
-                this.selectedDice = intersects[0].object;
+				console.log(intersects[0]["object"])
+                this.selectedDice = intersects[0]["object"];
                 for(let i = 0; i < this.not_locked_dices.length; i++) {
                     this.not_locked_dices[i].cube.traverse((mesh) => {
                         mesh.material.color.set("lime");
                     });
                 }
-                this.selectedDice.traverse((mesh) => {
-                    mesh.material.color.set("red");
-                });
+                this.selectedDice.material.color.set("red");
             }
-            this.show();
+			this.show();
 		};
-		window.addEventListener("click", onMouse);
+		Array.from(document.getElementsByClassName("list-item")).forEach((elem)=>elem.addEventListener("click", onMouse));
 	}
 }
-
-const tentative = new Tentative();
-tentative.init_scene();
-tentative.selector();
-tentative.show();

@@ -1,16 +1,26 @@
 export class Dice {
 	#value;
 	cube;
-	constructor() {
-		this.loadModel();
+	constructor(i) {
+		this.number = i;
+		this.scene = new THREE.Scene();
+		this.camera =  new THREE.PerspectiveCamera(
+			75,
+			window.innerWidth / window.innerHeight,
+			0.1,
+			1000,
+		);
 		this.#value = Math.floor(Math.random() * 6) + 1;
 	}
-
 	loadModel() {
 		return new Promise((resolve, reject) => {
 			const loadModel = () => {
-				this.cube.position.set(0, 0, 0);
-				this.cube.scale.setScalar(0.3);
+				this.cube.position.x = (this.number - 2);
+				this.cube.scale.setScalar(0.6);
+				this.cube.rotation.set(0, 0, 0);
+				this.cube.traverse((mesh) => {
+					mesh.material = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
+				});
 				resolve();
 			};
 
@@ -37,7 +47,7 @@ export class Dice {
 			);
 		});
 	}
-	throw(show) {
+	throw() {
 		// this method must return the score of the dice
 		this.#value = Math.floor(Math.random() * 6) + 1;
 		return this.#value;
