@@ -36,7 +36,7 @@ export class Dice {
 			this.manager = new THREE.LoadingManager(loadModel);
 			const loader = new THREE.OBJLoader(this.manager);
 			loader.load(
-				"../decathlon/models/dice.obj",
+				"./models/dice.obj",
 				(obj) => {
 					this.cube = obj;
 				},
