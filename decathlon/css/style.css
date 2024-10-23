@@ -8,14 +8,8 @@
   z-index: -1;
 }
 
-.list-item {
-  display: inline-block;
-  width: 10em;
-  height: 10em;
-}
-
 #dicethrow {
-  position: absolute;
-  left: 0;
-  top: 0;
+  display: inline-block;
+  width: 50em;
+  height: 10em;
 }

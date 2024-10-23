@@ -1,6 +1,7 @@
 import { Dice } from "./dice.js";
 
 export class Tentative {
+    canvas;
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(
         75,
@@ -8,8 +9,10 @@ export class Tentative {
         0.1,
         1000,
     );
-    renderer = new THREE.WebGLRenderer();
-
+    renderer = new THREE.WebGLRenderer({
+        canvas: canvas,
+        antialias: true,
+    });
     pointer = new THREE.Vector2();
     raycaster = new THREE.Raycaster();
 
@@ -39,17 +42,17 @@ export class Tentative {
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.scene.background = new THREE.Color("#000000");
-        document.getElementById("dicethrow").appendChild(this.renderer.domElement);
         const light = new THREE.HemisphereLight("#FFFFFF", "#757575", 0.5);
         this.scene.add(light);
         this.camera.position.z = 6;
         this.camera.position.x = 6;
-
         await Promise.all(this.not_locked_dices.map((dice) => dice.loadModel()));
 
         for (let i = 0; i < this.not_locked_dices.length; i++) {
             this.dices[i].cube.position.set(i - 2, 0, 0);
-            this.dices[i].cube.rotation.set(0, 0, 0);
+            const light2 = new THREE.DirectionalLight(0x0000ff, 5);
+            light2.position.set(i-2, 0, 5);
+            this.scene.add(light2);
             this.dices[i].cube.traverse((mesh) => {
                 mesh.material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
             });
@@ -59,10 +62,6 @@ export class Tentative {
     }
 
     show() {
-        if (!this.initialized) {
-            this.init_scene();
-            this.initialized = true;
-        }
         this.renderer.render(this.scene, this.camera);
     }
     start_turn() {
@@ -96,6 +95,11 @@ export class Tentative {
                 intersects[0].object.traverse((mesh) => {
                     mesh.material.color.set("red");
                 });
+                console.log(this.not_locked_dices[0].throw());
+                let goal=this.not_locked_dices[0].getGoalRotation();
+                console.log(goal);
+                this.not_locked_dices[0].cube.rotation.x = goal[0];
+                this.not_locked_dices[0].cube.rotation.y = goal[1];
             }
                 
             this.show();

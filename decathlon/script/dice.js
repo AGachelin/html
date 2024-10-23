@@ -7,11 +7,7 @@ export class Dice {
 	loadModel() {
 		return new Promise((resolve, reject) => {
 			const loadModel = () => {
-				this.cube.scale.setScalar(0.6);
-				this.cube.rotation.set(0, 0, 0);
-				this.cube.traverse((mesh) => {
-					mesh.material = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
-				});
+				this.cube.scale.setScalar(0.3);
 				resolve();
 			};
 
@@ -37,6 +33,22 @@ export class Dice {
 				onError,
 			);
 		});
+	}
+	getGoalRotation(){
+		switch(this.#value){
+			case 1:
+				return [0,-1*Math.PI/2];
+			case 2:
+				return [0,0];
+			case 3:
+				return [Math.PI/2,0];
+			case 4:
+				return [3*Math.PI/2,0];
+			case 5:
+				return [2*Math.PI/2,0];
+			case 6:
+				return [0,1*Math.PI/2];
+		}
 	}
 	throw() {
 		// this method must return the score of the dice
