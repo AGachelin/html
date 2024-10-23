@@ -9,9 +9,10 @@ export class Tentative {
         1000,
     );
     renderer = new THREE.WebGLRenderer();
-
     pointer = new THREE.Vector2();
     raycaster = new THREE.Raycaster();
+
+    selected_dice = -1;
 
     constructor() {
         this.show = this.show.bind(this);
@@ -65,20 +66,16 @@ export class Tentative {
         }
         this.renderer.render(this.scene, this.camera);
     }
-    start_turn() {
-        scores = [0, 0, 0, 0, 0, 0];
+    async start_turn() {
+        const scores = [0, 0, 0, 0, 0, 0];
         for (let i = 0; i < this.not_locked_dices.length; i++) {
             scores[i] = this.not_locked_dices[i].throw(this.show);
             this.score += scores[i];
         }
-        dice_selected = selector();
-        if (dice_selected !== -1) {
-            this.locked_dices.push(this.not_locked_dices.splice(dice_selected, 1));
-            return false;
-        }
-        return true;
+
+        console.log(await this.enable_selector());
     }
-    selector() {
+    async enable_selector() {
         const onMouse = (event) => {
             this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
             this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -88,18 +85,41 @@ export class Tentative {
                 true,
             );
             if (intersects.length !== 0) {
-                for(const dice of this.not_locked_dices){
+                for (const dice of this.not_locked_dices) {
                     dice.cube.traverse((mesh) => {
                         mesh.material.color.set("lime");
-                    })
+                    });
                 }
                 intersects[0].object.traverse((mesh) => {
                     mesh.material.color.set("red");
                 });
+                this.selected_dice = this.not_locked_dices.indexOf(
+                    intersects[0].object,
+                );
             }
-                
+
             this.show();
         };
+        let toggle = false;
+
         window.addEventListener("click", onMouse);
+        document.getElementById("dice_locking").click = () => {
+            toggle = !toggle;
+        };
+
+        return new Promise((resolve) => {
+            const checkselection = () => {
+                if (toggle && this.selected_dice !== -1) {
+                    resolve(this.selected_dice);
+                } else {
+                    requestAnimationFrame(checkselection);
+                }
+            }
+            checkselection();
+        }).then( () => {
+            window.removeEventListener("click", onMouse);
+            toggle = !toggle;
+            this.locked_dices.push(this.not_locked_dices.splice(this.selected_dice, 1));
+        } );
     }
 }
