@@ -129,7 +129,7 @@ export class Tentative {
             }
             this.show();
         };
-        for (item in Array.from(document.getElementsByClassName("list-item"))) {
+        for (const item of Array.from(document.getElementsByClassName("list-item"))) {
             item.addEventListener("click", onMouse);
         }
     }
