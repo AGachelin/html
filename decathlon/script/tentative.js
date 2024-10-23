@@ -1,6 +1,6 @@
 import { Dice } from "./dice.js";
 
-class Tentative {
+export class Tentative {
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(
         75,
@@ -45,11 +45,6 @@ class Tentative {
         this.camera.position.z = 6;
         this.camera.position.x = 6;
 
-        this.cube = new THREE.Mesh(
-            new THREE.BoxGeometry(1, 1, 1),
-            new THREE.MeshBasicMaterial({ color: 0x00ff00 }),
-        );
-
         await Promise.all(this.not_locked_dices.map((dice) => dice.loadModel()));
 
         for (let i = 0; i < this.not_locked_dices.length; i++) {
@@ -60,8 +55,6 @@ class Tentative {
             });
             this.scene.add(this.dices[i].cube);
         }
-        this.cube.position.set(0, 2, 0);
-        this.scene.add(this.cube);
         this.orbitControls();
     }
 
@@ -94,13 +87,17 @@ class Tentative {
                 this.scene.children,
                 true,
             );
-            console.log(intersects);
-            for (let i = 0; i < intersects.length; i++) {
-                intersects[i].object.traverse((mesh) => {
+            if (intersects.length !== 0) {
+                for(const dice of this.not_locked_dices){
+                    dice.cube.traverse((mesh) => {
+                        mesh.material.color.set("lime");
+                    })
+                }
+                intersects[0].object.traverse((mesh) => {
                     mesh.material.color.set("red");
                 });
-                console.log(intersects[i].object);
             }
+                
             this.show();
         };
         window.addEventListener("click", onMouse);
