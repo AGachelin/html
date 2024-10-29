@@ -7,7 +7,7 @@ export class Dice {
 	loadModel() {
 		return new Promise((resolve, reject) => {
 			const loadModel = () => {
-				this.cube.scale.setScalar(0.6);
+				this.cube.scale.setScalar(0.05);
 				this.cube.rotation.set(0, 0, 0);
 				this.cube.traverse((mesh) => {
 					mesh.material = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
@@ -29,7 +29,7 @@ export class Dice {
 			this.manager = new THREE.LoadingManager(loadModel);
 			const loader = new THREE.OBJLoader(this.manager);
 			loader.load(
-				"./models/dice.obj",
+				"./models/Dicev3.obj",
 				(obj) => {
 					this.cube = obj;
 				},
