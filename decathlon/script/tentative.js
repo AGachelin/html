@@ -6,11 +6,12 @@ export class Tentative {
     camera = new THREE.PerspectiveCamera(
         75,
         window.innerWidth / window.innerHeight,
-        0.1,
-        1000,
+        1,
+        10,
     );
+    canvas = document.getElementById("canvas");
     renderer = new THREE.WebGLRenderer({
-        canvas: canvas,
+        canvas: this.canvas,
         antialias: true,
     });
     pointer = new THREE.Vector2();
@@ -52,7 +53,7 @@ export class Tentative {
 
         for (let i = 0; i < this.not_locked_dices.length; i++) {
             this.dices[i].cube.position.set(i - 2, 0, 0);
-            const light2 = new THREE.DirectionalLight(0x0000ff, 5);
+            const light2 = new THREE.DirectionalLight(0xffffff, 0.5);
             light2.position.set(i-2, 0, 5);
             this.scene.add(light2);
             this.dices[i].cube.traverse((mesh) => {
@@ -95,9 +96,13 @@ export class Tentative {
                 });
                 console.log(this.not_locked_dices[0].throw());
                 let goal=this.not_locked_dices[0].getGoalRotation();
+                // const quaternion = new THREE.Quaternion().setFromAxisAngle((1,0,0), goal[0]/(2*Math.Pi) );
+                // const quaternion1 = new THREE.Quaternion().setFromAxisAngle((0,1,0), goal[1] );
                 console.log(goal);
-                this.not_locked_dices[0].cube.rotation.x = goal[0];
-                this.not_locked_dices[0].cube.rotation.y = goal[1];
+                intersects[0].object.rotation.x=goal[0]
+                intersects[0].object.rotation.y=goal[1];
+                console.log(this.not_locked_dices[0].cube);
+                // this.camera.updateProjectionMatrix();
                 this.selected_dice = this.not_locked_dices.indexOf(
                     intersects[0].object,
                 );

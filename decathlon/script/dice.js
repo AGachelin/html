@@ -7,7 +7,7 @@ export class Dice {
 	loadModel() {
 		return new Promise((resolve, reject) => {
 			const loadModel = () => {
-				this.cube.scale.setScalar(0.3);
+				this.cube.scale.setScalar(0.03);
 				resolve();
 			};
 
@@ -25,7 +25,7 @@ export class Dice {
 			this.manager = new THREE.LoadingManager(loadModel);
 			const loader = new THREE.OBJLoader(this.manager);
 			loader.load(
-				"./models/dice.obj",
+				"./models/Dicev3.obj",
 				(obj) => {
 					this.cube = obj;
 				},
@@ -38,14 +38,14 @@ export class Dice {
 		switch(this.#value){
 			case 1:
 				return [0,-1*Math.PI/2];
-			case 2:
+			case 4:
 				return [0,0];
 			case 3:
-				return [Math.PI/2,0];
-			case 4:
-				return [3*Math.PI/2,0];
-			case 5:
 				return [2*Math.PI/2,0];
+			case 2:
+				return [-1*Math.PI/2,0];
+			case 5:
+				return [Math.PI/2,0];
 			case 6:
 				return [0,1*Math.PI/2];
 		}
