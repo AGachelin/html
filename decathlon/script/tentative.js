@@ -1,6 +1,7 @@
 import { Dice } from "./dice.js";
 
 export class Tentative {
+	#score;
 	scene = new THREE.Scene();
 	camera = new THREE.PerspectiveCamera(
 		75,
@@ -16,9 +17,9 @@ export class Tentative {
 	pointer = new THREE.Vector2();
 	raycaster = new THREE.Raycaster();
 
-	selected_dice = -1;
-
 	constructor() {
+		this.#score = 0;
+		this.selected_dice = -1;
 		this.show = this.show.bind(this);
 		this.initialized = false;
 		this.dices = [];
@@ -29,7 +30,6 @@ export class Tentative {
 			this.not_locked_dices.push(this.dices[i]);
 			this.show();
 		}
-		this.score = 0;
 	}
 	orbitControls() {
 		const controls = new THREE.OrbitControls(
@@ -70,10 +70,14 @@ export class Tentative {
 		const scores = [0, 0, 0, 0, 0, 0];
 		for (let i = 0; i < this.not_locked_dices.length; i++) {
 			scores[i] = this.not_locked_dices[i].throw(this.show);
-			this.score += scores[i];
+            const goal = this.not_locked_dices[i].getGoalRotation();
+            this.not_locked_dices[i].cube.rotation.x = goal[0];
+            this.not_locked_dices[i].cube.rotation.y = goal[1];
+			this.#score += scores[i];
 		}
 
 		console.log(await this.enable_selector());
+        console.log(this.selected_dice);
 	}
 	async enable_selector() {
 		const onMouse = (event) => {
@@ -93,17 +97,9 @@ export class Tentative {
 				intersects[0].object.traverse((mesh) => {
 					mesh.material.color.set("red");
 				});
-				console.log(this.not_locked_dices[0].throw());
-				const goal = this.not_locked_dices[0].getGoalRotation();
-				// const quaternion = new THREE.Quaternion().setFromAxisAngle((1,0,0), goal[0]/(2*Math.Pi) );
-				// const quaternion1 = new THREE.Quaternion().setFromAxisAngle((0,1,0), goal[1] );
-				console.log(goal);
-				intersects[0].object.rotation.x = goal[0];
-				intersects[0].object.rotation.y = goal[1];
-				console.log(this.not_locked_dices[0].cube);
-				// this.camera.updateProjectionMatrix();
-				this.selected_dice = this.not_locked_dices.indexOf(
-					intersects[0].object,
+
+				this.selected_dice = this.not_locked_dices.findIndex(
+					(dice) => dice.cube === intersects[0].object.parent,
 				);
 			}
 
@@ -112,7 +108,7 @@ export class Tentative {
 		let toggle = false;
 
 		window.addEventListener("click", onMouse);
-		document.getElementById("dice_locking").click = () => {
+		document.getElementById("dice_locking").onclick = () => {
 			toggle = !toggle;
 		};
 
@@ -131,6 +127,19 @@ export class Tentative {
 			this.locked_dices.push(
 				this.not_locked_dices.splice(this.selected_dice, 1),
 			);
+		});
+	}
+
+	async getScore() {
+		return new Promise((resolve) => {
+			const checkScore = () => {
+				if (this.#score > 0) {
+					resolve(this.#score);
+				} else {
+					requestAnimationFrame(checkScore);
+				}
+			};
+			checkScore();
 		});
 	}
 }
