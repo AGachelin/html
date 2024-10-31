@@ -75,16 +75,16 @@ export class Tentative {
 			this.not_locked_dices[i].cube.rotation.y = goal[1];
 			this.#score += scores[i];
 		}
-        this.show();
+		this.show();
 
-        console.log("not locked dices", this.not_locked_dices.length);
-        console.log("locked dices", this.locked_dices.length);
+		console.log("not locked dices", this.not_locked_dices.length);
+		console.log("locked dices", this.locked_dices.length);
 		console.log(await this.enable_selector());
 		console.log("selected dice", this.selected_dice);
 		this.locked_dices.push(this.not_locked_dices.splice(this.selected_dice, 1));
 
 		if (this.not_locked_dices.length !== 0) {
-            this.selected_dice = -1;
+			this.selected_dice = -1;
 			this.start_turn();
 		}
 	}
@@ -107,13 +107,19 @@ export class Tentative {
 				this.selected_dice = this.not_locked_dices.findIndex(
 					(dice) => dice.cube === intersects[0].object.parent,
 				);
-                if(this.selected_dice !== -1) {
-                    intersects[0].object.traverse((mesh) => {
-                        mesh.material.color.set("red");
-                    });
-                }
 
+				if (
+					this.selected_dice !== -1 &&
+					this.not_locked_dices[this.selected_dice].getValue() % 2 === 0
+				) {
+					intersects[0].object.traverse((mesh) => {
+						mesh.material.color.set("red");
+					});
+				} else {
+					this.selected_dice = -1;
+				}
 			}
+            console.log(this.selected_dice);
 
 			this.show();
 		};
@@ -136,9 +142,9 @@ export class Tentative {
 		}).then(() => {
 			window.removeEventListener("click", onMouse);
 			toggle = false;
-            this.not_locked_dices[this.selected_dice].cube.traverse((mesh) => {
-                mesh.material.color.set("black");
-            });
+			this.not_locked_dices[this.selected_dice].cube.traverse((mesh) => {
+				mesh.material.color.set("black");
+			});
 		});
 	}
 
