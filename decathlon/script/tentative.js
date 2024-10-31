@@ -70,14 +70,23 @@ export class Tentative {
 		const scores = [0, 0, 0, 0, 0, 0];
 		for (let i = 0; i < this.not_locked_dices.length; i++) {
 			scores[i] = this.not_locked_dices[i].throw(this.show);
-            const goal = this.not_locked_dices[i].getGoalRotation();
-            this.not_locked_dices[i].cube.rotation.x = goal[0];
-            this.not_locked_dices[i].cube.rotation.y = goal[1];
+			const goal = this.not_locked_dices[i].getGoalRotation();
+			this.not_locked_dices[i].cube.rotation.x = goal[0];
+			this.not_locked_dices[i].cube.rotation.y = goal[1];
 			this.#score += scores[i];
 		}
+        this.show();
 
+        console.log("not locked dices", this.not_locked_dices.length);
+        console.log("locked dices", this.locked_dices.length);
 		console.log(await this.enable_selector());
-        console.log(this.selected_dice);
+		console.log("selected dice", this.selected_dice);
+		this.locked_dices.push(this.not_locked_dices.splice(this.selected_dice, 1));
+
+		if (this.not_locked_dices.length !== 0) {
+            this.selected_dice = -1;
+			this.start_turn();
+		}
 	}
 	async enable_selector() {
 		const onMouse = (event) => {
@@ -94,13 +103,16 @@ export class Tentative {
 						mesh.material.color.set("lime");
 					});
 				}
-				intersects[0].object.traverse((mesh) => {
-					mesh.material.color.set("red");
-				});
 
 				this.selected_dice = this.not_locked_dices.findIndex(
 					(dice) => dice.cube === intersects[0].object.parent,
 				);
+                if(this.selected_dice !== -1) {
+                    intersects[0].object.traverse((mesh) => {
+                        mesh.material.color.set("red");
+                    });
+                }
+
 			}
 
 			this.show();
@@ -123,10 +135,10 @@ export class Tentative {
 			checkselection();
 		}).then(() => {
 			window.removeEventListener("click", onMouse);
-			toggle = !toggle;
-			this.locked_dices.push(
-				this.not_locked_dices.splice(this.selected_dice, 1),
-			);
+			toggle = false;
+            this.not_locked_dices[this.selected_dice].cube.traverse((mesh) => {
+                mesh.material.color.set("black");
+            });
 		});
 	}
 
