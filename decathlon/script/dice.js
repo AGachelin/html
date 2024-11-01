@@ -56,4 +56,8 @@ export class Dice {
     console.log(this.#value);
     return this.#value;
   }
+
+  getValue(){
+    return this.#value;
+  }
 }

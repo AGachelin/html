@@ -16,14 +16,16 @@ export class Tentative {
   pointer = new THREE.Vector2();
   raycaster = new THREE.Raycaster();
 
-  selected_dice = -1;
+  selected_dice;
 
   constructor() {
     this.show = this.show.bind(this);
+    this.end_turn = this.end_turn.bind(this);
     this.initialized = false;
     this.dices = [];
     this.not_locked_dices = [];
     this.locked_dices = [];
+    this.locked_previous_turn = 0;
     this.cubes = [];
     for (let i = 0; i < 5; i++) {
       this.dices.push(new Dice());
@@ -42,6 +44,7 @@ export class Tentative {
     controls.addEventListener("change", this.show);
   }
   async init_scene() {
+    document.querySelector("#dice_locking").addEventListener("click", this.end_turn);
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.scene.background = new THREE.Color("#000000");
@@ -76,12 +79,15 @@ export class Tentative {
   async start_turn() {
     const scores = [0, 0, 0, 0, 0, 0];
     for (let i = 0; i < this.not_locked_dices.length; i++) {
-      scores[i] = this.not_locked_dices[i].throw(this.show);
+      scores[i] = this.not_locked_dices[i].throw();
+      const goal = this.not_locked_dices[i].getGoalRotation();
+      this.not_locked_dices[i].cube.rotation.x = goal[0];
+      this.not_locked_dices[i].cube.rotation.y = goal[1];
       this.score += scores[i];
     }
-
     console.log(await this.enable_selector());
   }
+
   async enable_selector() {
     const onMouse = (event) => {
       this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -92,56 +98,45 @@ export class Tentative {
         true
       );
       if (intersects.length !== 0) {
-        for (const dice of this.not_locked_dices) {
-          dice.cube.traverse((mesh) => {
-            mesh.material.color.set("lime");
-          });
-        }
-        intersects[0].object.traverse((mesh) => {
-          mesh.material.color.set("red");
-        });
-        const goal = this.not_locked_dices[0].getGoalRotation();
-        intersects[0].object.rotation.x = goal[0];
-        intersects[0].object.rotation.y = goal[1];
         this.selected_cube = this.cubes.indexOf(intersects[0].object.parent);
-        this.selected_dice = this.dices[this.selected_cube];
-        this.end_turn();
+        if(this.dices[this.selected_cube].getValue()%2===0){
+            this.selected_dice = this.dices[this.selected_cube];
+            const index_unlocked = this.not_locked_dices.indexOf(this.selected_dice);
+            if(index_unlocked>-1){
+                this.selected_dice.cube.traverse((mesh) => {
+                    mesh.material.color.set("red");
+                });
+                this.not_locked_dices.splice(index_unlocked, 1);
+                this.locked_dices.push(this.selected_dice);
+            }
+            else{
+                this.selected_dice.cube.traverse((mesh) => {
+                    mesh.material.color.set("lime");
+                });
+                this.locked_dices.splice(this.locked_dices.indexOf(this.selected_dice), 1);
+                this.not_locked_dices.push(this.selected_dice);
+            }
+        }
+        else{
+            alert("Seuls les dés de valeur paire peuvent être sélectionnés");
+        }
       }
-
       this.show();
     };
-    let toggle = false;
-
     window.addEventListener("click", onMouse);
-    document.getElementById("dice_locking").click = () => {
-      toggle = !toggle;
-    };
-
     return new Promise((resolve) => {
-      const checkselection = () => {
-        if (toggle && this.selected_dice !== -1) {
-          resolve(this.selected_dice);
-        } else {
-          requestAnimationFrame(checkselection);
-        }
-      };
-      checkselection();
-    }).then(() => {
-      window.removeEventListener("click", onMouse);
-      toggle = !toggle;
-      this.locked_dices.push(this.not_locked_dices.splice(this.selected_dice, 1));
+        resolve();
     });
   }
 
   async end_turn() {
-    const index = this.not_locked_dices.indexOf(this.selected_dice);
-    if (index > -1) {
-      this.not_locked_dices.splice(index, 1);
+    if (this.locked_dices.length > this.locked_previous_turn) {
+      this.locked_previous_turn = this.locked_dices.length;
       this.not_locked_dices.map((dice) => dice.throw());
       const anim_end = new Array(this.not_locked_dices.length).fill(false);
       let n = 0;
       while (n < 2 && !anim_end.every(Boolean)) {
-        n += 0.02;
+        n += 0.05;
         if (n < 1) {
           for (const dice of this.not_locked_dices) {
             const val = Math.floor(Math.random() * 6) + 1;
@@ -173,13 +168,20 @@ export class Tentative {
       for (let i = 0; i < this.not_locked_dices.length; i++) {
         if (!anim_end[i]) {
           const dice = this.not_locked_dices[i];
-          goal = dice.getGoalRotation();
+          let goal = dice.getGoalRotation();
           dice.cube.rotation.x = goal[0];
           dice.cube.rotation.y = goal[1];
         }
       }
+      const lost = this.not_locked_dices.map((dice)=> {return dice.getValue()%2===1;});
+      console.log(lost);
+      if(lost.every(Boolean)){
+        //tentative perdue
+        alert("Tous les dés ont une valeur impaire, cette tentative est perdue");
+        this.init_scene();
+      }
     } else {
-      alert("lorem ipsum");
+      alert("Aucun dé n'a été sélectionné");
     }
   }
 }
