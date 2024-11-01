@@ -25,7 +25,7 @@ export class Tentative {
     this.dices = [];
     this.not_locked_dices = [];
     this.locked_dices = [];
-    this.locked_previous_turn = 0;
+    this.permanently_locked = [];
     this.cubes = [];
     for (let i = 0; i < 5; i++) {
       this.dices.push(new Dice());
@@ -101,6 +101,7 @@ export class Tentative {
         this.selected_cube = this.cubes.indexOf(intersects[0].object.parent);
         if(this.dices[this.selected_cube].getValue()%2===0){
             this.selected_dice = this.dices[this.selected_cube];
+        if(this.permanently_locked.indexOf(this.selected_dice)===-1){
             const index_unlocked = this.not_locked_dices.indexOf(this.selected_dice);
             if(index_unlocked>-1){
                 this.selected_dice.cube.traverse((mesh) => {
@@ -118,6 +119,10 @@ export class Tentative {
             }
         }
         else{
+            alert("Ce dé a déjà été vérouillé");
+        }
+    }
+        else{
             alert("Seuls les dés de valeur paire peuvent être sélectionnés");
         }
       }
@@ -130,8 +135,9 @@ export class Tentative {
   }
 
   async end_turn() {
-    if (this.locked_dices.length > this.locked_previous_turn) {
-      this.locked_previous_turn = this.locked_dices.length;
+    if (this.locked_dices.length > 0) {
+      this.permanently_locked = this.locked_dices.slice();
+      this.locked_dices = [];
       this.not_locked_dices.map((dice) => dice.throw());
       const anim_end = new Array(this.not_locked_dices.length).fill(false);
       let n = 0;
@@ -173,12 +179,13 @@ export class Tentative {
           dice.cube.rotation.y = goal[1];
         }
       }
+      this.show();
       const lost = this.not_locked_dices.map((dice)=> {return dice.getValue()%2===1;});
-      console.log(lost);
       if(lost.every(Boolean)){
         //tentative perdue
         alert("Tous les dés ont une valeur impaire, cette tentative est perdue");
         this.init_scene();
+        this.show();
       }
     } else {
       alert("Aucun dé n'a été sélectionné");
