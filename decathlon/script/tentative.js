@@ -66,6 +66,9 @@ export class Tentative {
     show() {
         this.renderer.render(this.scene, this.camera);
     }
+    wait(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+    }
     async start_turn() {
         const scores = [0, 0, 0, 0, 0, 0];
         for (let i = 0; i < this.not_locked_dices.length; i++) {
@@ -85,6 +88,7 @@ export class Tentative {
 
         if (this.not_locked_dices.length > 1) {
             this.selected_dice = -1;
+            // this.end_turn();
             this.start_turn();
         }
     }
@@ -159,5 +163,54 @@ export class Tentative {
             };
             checkScore();
         });
+    }
+    async end_turn() {
+        const index = this.not_locked_dices.indexOf(this.selected_dice);
+        if (index > -1) {
+            this.not_locked_dices.splice(index, 1);
+            this.not_locked_dices.map((dice) => dice.throw());
+            const anim_end = new Array(this.not_locked_dices.length).fill(false);
+            let n = 0;
+            while (n < 2 && !anim_end.every(Boolean)) {
+                n += 0.02;
+                if (n < 1) {
+                    for (const dice of this.not_locked_dices) {
+                        const val = Math.floor(Math.random() * 6) + 1;
+                        const goal = dice.getGoalRotation(val);
+                        dice.cube.rotation.x = goal[0];
+                        dice.cube.rotation.y = goal[1];
+                    }
+                } else {
+                    for (let i = 0; i < this.not_locked_dices.length; i++) {
+                        if (!anim_end[i]) {
+                            const dice = this.not_locked_dices[i];
+                            let goal;
+                            const stop_dice = Math.random();
+                            if (stop_dice > 0.05) {
+                                const val = Math.floor(Math.random() * 6) + 1;
+                                goal = dice.getGoalRotation(val);
+                            } else {
+                                goal = dice.getGoalRotation();
+                                anim_end[i] = true;
+                            }
+                            dice.cube.rotation.x = goal[0];
+                            dice.cube.rotation.y = goal[1];
+                        }
+                    }
+                }
+                this.show();
+                await this.wait(150);
+            }
+            for (let i = 0; i < this.not_locked_dices.length; i++) {
+                if (!anim_end[i]) {
+                    const dice = this.not_locked_dices[i];
+                    goal = dice.getGoalRotation();
+                    dice.cube.rotation.x = goal[0];
+                    dice.cube.rotation.y = goal[1];
+                }
+            }
+        } else {
+            alert("lorem ipsum");
+        }
     }
 }
