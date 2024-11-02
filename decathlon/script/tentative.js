@@ -21,6 +21,7 @@ export class Tentative {
   constructor() {
     this.show = this.show.bind(this);
     this.end_turn = this.end_turn.bind(this);
+    this.onWindowResize = this.onWindowResize.bind(this);
     this.initialized = false;
     this.dices = [];
     this.not_locked_dices = [];
@@ -44,7 +45,9 @@ export class Tentative {
     controls.addEventListener("change", this.show);
   }
   async init_scene() {
-    document.querySelector("#dice_locking").addEventListener("click", this.end_turn);
+    document
+      .querySelector("#dice_locking")
+      .addEventListener("click", this.end_turn);
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.scene.background = new THREE.Color("#000000");
@@ -66,6 +69,7 @@ export class Tentative {
       this.scene.add(this.dices[i].cube);
     }
     this.orbitControls();
+    window.addEventListener("resize", this.onWindowResize, false);
   }
 
   show() {
@@ -76,6 +80,12 @@ export class Tentative {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
+  onWindowResize() {
+    this.camera.aspect = window.innerWidth / window.innerHeight;
+    this.camera.updateProjectionMatrix();
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.show();
+  }
   async start_turn() {
     const scores = [0, 0, 0, 0, 0, 0];
     for (let i = 0; i < this.not_locked_dices.length; i++) {
@@ -99,38 +109,40 @@ export class Tentative {
       );
       if (intersects.length !== 0) {
         this.selected_cube = this.cubes.indexOf(intersects[0].object.parent);
-        if(this.dices[this.selected_cube].getValue()%2===0){
-            this.selected_dice = this.dices[this.selected_cube];
-        if(this.permanently_locked.indexOf(this.selected_dice)===-1){
-            const index_unlocked = this.not_locked_dices.indexOf(this.selected_dice);
-            if(index_unlocked>-1){
-                this.selected_dice.cube.traverse((mesh) => {
-                    mesh.material.color.set("red");
-                });
-                this.not_locked_dices.splice(index_unlocked, 1);
-                this.locked_dices.push(this.selected_dice);
+        if (this.dices[this.selected_cube].getValue() % 2 === 0) {
+          this.selected_dice = this.dices[this.selected_cube];
+          if (this.permanently_locked.indexOf(this.selected_dice) === -1) {
+            const index_unlocked = this.not_locked_dices.indexOf(
+              this.selected_dice
+            );
+            if (index_unlocked > -1) {
+              this.selected_dice.cube.traverse((mesh) => {
+                mesh.material.color.set("red");
+              });
+              this.not_locked_dices.splice(index_unlocked, 1);
+              this.locked_dices.push(this.selected_dice);
+            } else {
+              this.selected_dice.cube.traverse((mesh) => {
+                mesh.material.color.set("lime");
+              });
+              this.locked_dices.splice(
+                this.locked_dices.indexOf(this.selected_dice),
+                1
+              );
+              this.not_locked_dices.push(this.selected_dice);
             }
-            else{
-                this.selected_dice.cube.traverse((mesh) => {
-                    mesh.material.color.set("lime");
-                });
-                this.locked_dices.splice(this.locked_dices.indexOf(this.selected_dice), 1);
-                this.not_locked_dices.push(this.selected_dice);
-            }
-        }
-        else{
+          } else {
             alert("Ce dé a déjà été vérouillé");
-        }
-    }
-        else{
-            alert("Seuls les dés de valeur paire peuvent être sélectionnés");
+          }
+        } else {
+          alert("Seuls les dés de valeur paire peuvent être sélectionnés");
         }
       }
       this.show();
     };
     window.addEventListener("click", onMouse);
     return new Promise((resolve) => {
-        resolve();
+      resolve();
     });
   }
 
@@ -180,8 +192,10 @@ export class Tentative {
         }
       }
       this.show();
-      const lost = this.not_locked_dices.map((dice)=> {return dice.getValue()%2===1;});
-      if(lost.every(Boolean)){
+      const lost = this.not_locked_dices.map((dice) => {
+        return dice.getValue() % 2 === 1;
+      });
+      if (lost.every(Boolean)) {
         //tentative perdue
         alert("Tous les dés ont une valeur impaire, cette tentative est perdue");
         this.init_scene();
