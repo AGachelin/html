@@ -19,12 +19,17 @@ export class Tentative {
 
 	constructor() {
 		this.#score = 0;
-		this.selected_dice = -1;
+		this.is_able_to_play = true;
+		this.selected_dice;
+		this.selected_cube = -1;
+		this.cubes = [];
 		this.show = this.show.bind(this);
+		this.onWindowResize = this.onWindowResize.bind(this);
 		this.initialized = false;
 		this.dices = [];
 		this.not_locked_dices = [];
 		this.locked_dices = [];
+		this.permanently_locked = [];
 		for (let i = 0; i < 5; i++) {
 			this.dices.push(new Dice());
 			this.not_locked_dices.push(this.dices[i]);
@@ -51,6 +56,7 @@ export class Tentative {
 		await Promise.all(this.not_locked_dices.map((dice) => dice.loadModel()));
 
 		for (let i = 0; i < this.not_locked_dices.length; i++) {
+			this.cubes.push(this.dices[i].cube);
 			this.dices[i].cube.position.set(i - 2, 0, 0);
 			const light2 = new THREE.DirectionalLight(0xffffff, 0.5);
 			light2.position.set(i - 2, 0, 5);
@@ -61,6 +67,7 @@ export class Tentative {
 			this.scene.add(this.dices[i].cube);
 		}
 		this.orbitControls();
+		window.addEventListener("resize", this.onWindowResize, false);
 	}
 
 	show() {
@@ -69,7 +76,7 @@ export class Tentative {
 	wait(ms) {
 		return new Promise((resolve) => setTimeout(resolve, ms));
 	}
-	async start_turn() {
+	async play_turn() {
 		const scores = [0, 0, 0, 0, 0, 0];
 		for (let i = 0; i < this.not_locked_dices.length; i++) {
 			scores[i] = this.not_locked_dices[i].throw(this.show);
@@ -79,15 +86,18 @@ export class Tentative {
 			this.#score += scores[i];
 		}
 		this.show();
+        this.checkPlayablility();
+		console.log(this.is_able_to_play);
+        this.not_locked_dices.map((dice) => {
+            console.log(dice.getValue());
+        });
 
-		if (this.not_locked_dices.length > 1) {
-			console.log(await this.enable_selector());
-			console.log("not locked dices", this.not_locked_dices.length);
-			console.log("locked dices", this.locked_dices.length);
-			console.log("selected dice", this.selected_dice);
+		if (this.not_locked_dices.length > 1 && this.is_able_to_play) {
+			await this.enable_selector();
 			await this.end_turn();
-			this.selected_dice = -1;
-			this.start_turn();
+			this.play_turn();
+		} else {
+			alert("You can't play anymore");
 		}
 	}
 	async enable_selector() {
@@ -100,29 +110,37 @@ export class Tentative {
 				true,
 			);
 			if (intersects.length !== 0) {
-				for (const dice of this.not_locked_dices) {
-					dice.cube.traverse((mesh) => {
-						mesh.material.color.set("lime");
-					});
-				}
-
-				this.selected_dice = this.not_locked_dices.findIndex(
-					(dice) => dice.cube === intersects[0].object.parent,
-				);
-
-				if (
-					this.selected_dice !== -1 &&
-					this.not_locked_dices[this.selected_dice].getValue() % 2 === 0
-				) {
-					intersects[0].object.traverse((mesh) => {
-						mesh.material.color.set("red");
-					});
+				this.selected_cube = this.cubes.indexOf(intersects[0].object.parent);
+				if (this.dices[this.selected_cube].getValue() % 2 === 0) {
+					this.selected_dice = this.dices[this.selected_cube];
+					if (this.permanently_locked.indexOf(this.selected_dice) === -1) {
+						const index_unlocked = this.not_locked_dices.indexOf(
+							this.selected_dice,
+						);
+						if (index_unlocked > -1) {
+							this.selected_dice.cube.traverse((mesh) => {
+								mesh.material.color.set("red");
+							});
+							this.not_locked_dices.splice(index_unlocked, 1);
+							this.locked_dices.push(this.selected_dice);
+						} else {
+							this.selected_dice.cube.traverse((mesh) => {
+								mesh.material.color.set("lime");
+							});
+							this.locked_dices.splice(
+								this.locked_dices.indexOf(this.selected_dice),
+								1,
+							);
+							this.not_locked_dices.push(this.selected_dice);
+						}
+					} else {
+						alert("Ce dé a déjà été vérouillé");
+					}
 				} else {
-					this.selected_dice = -1;
+					alert("Seuls les dés de valeur paire peuvent être sélectionnés");
 				}
 			}
 			this.show();
-			console.log("updated");
 		};
 		let toggle = false;
 
@@ -133,8 +151,8 @@ export class Tentative {
 
 		return new Promise((resolve) => {
 			const checkselection = () => {
-				if (toggle && this.selected_dice !== -1) {
-					resolve(this.selected_dice);
+				if (toggle && this.locked_dices.length > 0) {
+					resolve(this.locked_dices);
 				} else {
 					requestAnimationFrame(checkselection);
 				}
@@ -143,8 +161,10 @@ export class Tentative {
 		}).then(() => {
 			window.removeEventListener("click", onMouse);
 			toggle = false;
-			this.not_locked_dices[this.selected_dice].cube.traverse((mesh) => {
-				mesh.material.color.set("black");
+			this.locked_dices.map((dice) => {
+				dice.cube.traverse((mesh) => {
+					mesh.material.color.set("black");
+				});
 			});
 		});
 	}
@@ -162,16 +182,16 @@ export class Tentative {
 		});
 	}
 	async end_turn() {
-		const index = this.selected_dice;
-		if (index > -1) {
-			this.locked_dices.push(
-				this.not_locked_dices.splice(this.selected_dice, 1),
-			);
+		if (this.locked_dices.length > 0) {
+			this.locked_dices.map((dice) => {
+				this.permanently_locked.push(dice);
+			});
+			this.locked_dices = [];
 			this.not_locked_dices.map((dice) => dice.throw());
 			const anim_end = new Array(this.not_locked_dices.length).fill(false);
 			let n = 0;
 			while (n < 2 && !anim_end.every(Boolean)) {
-				n += 0.02;
+				n += 0.05;
 				if (n < 1) {
 					for (const dice of this.not_locked_dices) {
 						const val = Math.floor(Math.random() * 6) + 1;
@@ -208,8 +228,44 @@ export class Tentative {
 					dice.cube.rotation.y = goal[1];
 				}
 			}
-		} else {
-			alert("lorem ipsum");
+			this.show();
+		}
+	}
+	onWindowResize() {
+		this.camera.aspect = window.innerWidth / window.innerHeight;
+		this.camera.updateProjectionMatrix();
+		this.renderer.setSize(window.innerWidth, window.innerHeight);
+		this.show();
+	}
+	checkPlayablility() {
+		const lost = this.not_locked_dices.map((dice) => {
+			return dice.getValue() % 2 === 1;
+		});
+		if (lost.every(Boolean) || this.not_locked_dices.length === 1) {
+			alert("Every dice is odd, you can't play anymore");
+			this.is_able_to_play = false;
+		}
+	}
+	clearScene() {
+		while (this.scene.children.length > 0) {
+			const child = this.scene.children[0];
+			this.scene.remove(child);
+
+			if (child.geometry) {
+				child.geometry.dispose();
+			}
+
+			if (child.material) {
+				if (Array.isArray(child.material)) {
+					child.material.map((material) => material.dispose());
+				} else {
+					child.material.dispose();
+				}
+			}
+
+			if (child.texture) {
+				child.texture.dispose();
+			}
 		}
 	}
 }
