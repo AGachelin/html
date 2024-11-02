@@ -86,11 +86,11 @@ export class Tentative {
 			this.#score += scores[i];
 		}
 		this.show();
-        this.checkPlayablility();
+		this.checkPlayablility();
 		console.log(this.is_able_to_play);
-        this.not_locked_dices.map((dice) => {
-            console.log(dice.getValue());
-        });
+		this.not_locked_dices.map((dice) => {
+			console.log(dice.getValue());
+		});
 
 		if (this.not_locked_dices.length > 1 && this.is_able_to_play) {
 			await this.enable_selector();
