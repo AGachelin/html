@@ -11,9 +11,9 @@ export class Player {
     async play() {
         this.current_tentative = new Tentative();
         this.tentative++;
-        this.current_tentative.init_scene();
-        alert(this.name);
+        await this.current_tentative.init_scene();
         this.current_tentative.play_turn();
+        alert(this.name);
         console.log("waiting for end of turn");
         return this.current_tentative.getScore().then((score) => {
             this.score += score;
