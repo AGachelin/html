@@ -80,14 +80,7 @@ export class Tentative {
         return new Promise((resolve) => setTimeout(resolve, ms));
     }
     async play_turn() {
-        const scores = [0, 0, 0, 0, 0, 0];
-        for (let i = 0; i < this.not_locked_dices.length; i++) {
-            scores[i] = this.not_locked_dices[i].throw(this.show);
-            const goal = this.not_locked_dices[i].getGoalRotation();
-            this.not_locked_dices[i].cube.rotation.x = goal[0];
-            this.not_locked_dices[i].cube.rotation.y = goal[1];
-            this.#score += scores[i];
-        }
+        this.calculateScore();
         this.show();
         this.checkPlayablility();
         console.log(this.is_able_to_play);
@@ -281,5 +274,11 @@ export class Tentative {
                 child.texture.dispose();
             }
         }
+    }
+    calculateScore() {
+        this.#score = 0;
+        this.dices.map((dice) => {
+            this.#score += dice.getValue();
+        });
     }
 }
