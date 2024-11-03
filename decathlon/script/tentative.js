@@ -71,6 +71,13 @@ export class Tentative {
         document.getElementById("end_turn").onclick = () => {
             this.is_able_to_play = false;
         };
+        this.not_locked_dices.map((dice) => {
+            dice.throw();
+            const goal = dice.getGoalRotation();
+            dice.cube.rotation.x = goal[0];
+            dice.cube.rotation.y = goal[1];
+        });
+        this.show();
     }
 
     show() {
@@ -80,13 +87,9 @@ export class Tentative {
         return new Promise((resolve) => setTimeout(resolve, ms));
     }
     async play_turn() {
+
         this.calculateScore();
-        this.show();
         this.checkPlayablility();
-        console.log(this.is_able_to_play);
-        this.not_locked_dices.map((dice) => {
-            console.log(dice.getValue());
-        });
 
         if (this.not_locked_dices.length > 1 && this.is_able_to_play) {
             await this.enable_selector();
