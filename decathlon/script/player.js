@@ -12,6 +12,7 @@ export class Player {
         this.current_tentative = new Tentative();
         this.tentative++;
         this.current_tentative.init_scene();
+        alert(this.name);
         this.current_tentative.play_turn();
         console.log("waiting for end of turn");
         return this.current_tentative.getScore().then((score) => {

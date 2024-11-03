@@ -13,6 +13,7 @@ const playGame = async () => {
     for(let i = 0; i < players.length; i++) {
         await players[i].play();
     }
+    alert("Game Over");
 }
 
 document.getElementById("add_player").onclick = addPlayer;
