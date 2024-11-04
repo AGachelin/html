@@ -47,7 +47,8 @@ export class Tentative {
     }
     async init_scene() {
         this.renderer.setPixelRatio(window.devicePixelRatio);
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.buttons = document.getElementById("buttons")
+        this.renderer.setSize(window.innerWidth, window.innerHeight - this.buttons.scrollHeight*1.1);
         this.scene.background = new THREE.Color("black");
         const light = new THREE.HemisphereLight("#FFFFFF", "#757575", 0.5);
         light.position.set(0, 2, 0);
@@ -77,6 +78,7 @@ export class Tentative {
             dice.cube.rotation.x = goal[0];
             dice.cube.rotation.y = goal[1];
         });
+        this.onWindowResize();
         this.show();
     }
 
@@ -102,7 +104,7 @@ export class Tentative {
     async enable_selector() {
         const onMouse = (event) => {
             this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
-            this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            this.pointer.y = -(event.clientY / (window.innerHeight-this.buttons.scrollHeight*1.1)) * 2 + 1;
             this.raycaster.setFromCamera(this.pointer, this.camera);
             const intersects = this.raycaster.intersectObjects(
                 this.scene.children,
@@ -242,9 +244,9 @@ export class Tentative {
         }
     }
     onWindowResize() {
-        this.camera.aspect = window.innerWidth / window.innerHeight;
+        this.camera.aspect = window.innerWidth / (window.innerHeight - this.buttons.scrollHeight*1.1);
         this.camera.updateProjectionMatrix();
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.renderer.setSize(window.innerWidth, window.innerHeight - this.buttons.scrollHeight*1.1);
         this.show();
     }
     checkPlayablility() {
