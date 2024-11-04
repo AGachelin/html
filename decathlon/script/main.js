@@ -6,12 +6,16 @@ const players = [];
 const addPlayer = () => {
     players.push(new Player(`Player ${players.length + 1}`));
     document.getElementById("player_list").innerHTML += `<li>${players[players.length - 1].name}</li>`;
-    console.log("player added");
 };
 
 const playGame = async () => {
     for(let i = 0; i < players.length; i++) {
-        await players[i].play();
+        alert(players[i].name);
+        for(let j=0; j<3; j++){
+            await players[i].play();
+        }
+        console.log(players[i].score_table);
+        alert(`Score du joueur ${players[i].name}: ${Math.max(...players[i].score_table)}`)
     }
     alert("Partie terminée");
     document.querySelector("#done-button").dispatchEvent(new MouseEvent("click"));

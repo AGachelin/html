@@ -4,22 +4,19 @@ export class Player {
     constructor(name) {
         this.current_tentative;
         this.tentative = 0;
-        this.score = 0;
+        this.score;
         this.score_table = [];
         this.name = name;
     }
     async play() {
-        this.current_tentative = new Tentative();
-        this.tentative++;
-        await this.current_tentative.init_scene();
-        this.current_tentative.play_turn();
-        alert(this.name);
-        console.log("waiting for end of turn");
-        return this.current_tentative.getScore().then((score) => {
-            this.score += score;
-            this.score_table.push(this.score);
-            console.log("This is your score :", this.score);
-            alert("Score de la première tentative : " + String(this.score));
-        });
+            this.current_tentative = new Tentative();
+            this.tentative++;
+            await this.current_tentative.init_scene();
+            this.current_tentative.play_turn();
+            return this.current_tentative.getScore().then((score) => {
+                this.score = score;
+                this.score_table.push(this.score);
+                alert(`Score de la tentative n°${this.tentative} : ${this.score}`);
+            });
+        }
     }
-}
