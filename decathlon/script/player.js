@@ -1,12 +1,13 @@
 import { Tentative } from "./tentative.js";
 
 export class Player {
-    constructor(name) {
+    constructor(name, id) {
         this.current_tentative;
         this.tentative = 0;
         this.score;
         this.score_table = [];
         this.name = name;
+        this.id = id;
     }
     async play() {
             this.current_tentative = new Tentative();
@@ -19,4 +20,7 @@ export class Player {
                 alert(`Score de la tentative n°${this.tentative} : ${this.score}`);
             });
         }
+    destructor(){
+        document.getElementById(String(this.id)).outerHTML = "";
+    }
     }
