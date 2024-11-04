@@ -19,6 +19,7 @@ export class Player {
             this.score += score;
             this.score_table.push(this.score);
             console.log("This is your score :", this.score);
+            alert("Score de la première tentative : " + String(this.score));
         });
     }
 }
