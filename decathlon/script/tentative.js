@@ -50,20 +50,21 @@ export class Tentative {
         this.buttons = document.getElementById("buttons")
         this.renderer.setSize(window.innerWidth, window.innerHeight - this.buttons.scrollHeight*1.1);
         this.scene.background = new THREE.Color("black");
-        const light = new THREE.HemisphereLight("#FFFFFF", "#757575", 0.5);
+        const light = new THREE.HemisphereLight("#FFFFFF", "#757575", 1.5);
         light.position.set(0, 2, 0);
         this.scene.add(light);
-        this.camera.position.z = 5;
+        this.camera.position.z = 2;
+        this.camera.position.y = 0.5;
         await Promise.all(this.not_locked_dices.map((dice) => dice.loadModel()));
 
         for (let i = 0; i < this.not_locked_dices.length; i++) {
             this.cubes.push(this.dices[i].cube);
             this.dices[i].cube.position.set(i - 2, 0, 0);
-            const light2 = new THREE.DirectionalLight(0xffffff, 0.5);
-            light2.position.set(i - 2, 0, 5);
+            const light2 = new THREE.DirectionalLight(0xffffff, 5);
+            light2.position.set(i - 2, 0.5, 205);
             this.scene.add(light2);
             this.dices[i].cube.traverse((mesh) => {
-                mesh.material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+                mesh.material = new THREE.MeshPhysicalMaterial({ color: 0x00ff00, rougness: 0.5, metalness : 1});
             });
             this.scene.add(this.dices[i].cube);
         }
