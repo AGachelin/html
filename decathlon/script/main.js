@@ -91,7 +91,7 @@ const setHighScores = async () => {
 		document.getElementById("highscores").insertAdjacentHTML(
 			"beforeend",
 			`
-            <div class="card" style="width: 18rem;">
+            <div class="card" style="width: 18rem; opacity: 0.5 !important;">
             <div class="card-body">
                 <h5 class="card-title"> ${ranks[i]} </h5>
                 <h6 class="card-subtitle mb-2 text-muted">Score : ${highscores[ranks[i]]}</h6>
