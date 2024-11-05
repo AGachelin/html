@@ -3,18 +3,33 @@
 
 <head>
     <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Audiowide">
     <link href="../node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <meta charset="utf-8">
     <title>Décathlon</title>
 </head>
 
-<body id="throw">
+<body id="throw" style="background-image: url('./images/image.png');">
     <div id="div1">
-        <h1 class="text-center"> Lancer de disque </h1>
+        <h1 class="text-center audiowide" style="font-size: 4em"> Lancer de disque </h1>
         <div class="row">
             <div class="col">
-                <h2>Règles</h2>
-                <div>Commencez par lancer les 5 dés. Écartez alors au moins un dé. Si vous le désirez, relancez tous les
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-1">
+                            <button type="submit" id="play-button" class="audiowide_button">Play</button>
+                        </div>
+                    </div>
+                </div>
+                <h2 class="row justify-content-center" style="margin: 1em">
+                    <button class="audiowide_button" data-bs-toggle="collapse" href="#rulesText" role="button"
+                        aria-expanded="false" aria-controls="rulesText">
+                        Règles du jeu
+                    </button>
+                </h2>
+                <div class="collapse audiowide_classic" id="rulesText" style="background-color: white; font-weight: 1000; border: 5px solid lime;">
+                    Commencez par lancer les 5 dés. Écartez alors au moins un dé. Si
+                    vous le désirez, relancez tous les
                     autres.
                     Vous
                     pouvez réitérer l’opération plusieurs fois, à la condition de toujours écarter au moins un dé à
@@ -30,12 +45,17 @@
                     Si, après un lancer, vous n’êtes plus en mesure d’écarter un nouveau dé parce que tous montrent une
                     valeur
                     impaire, vous avez échoué dans votre tentative.</div>
-                <button type="submit" id="play-button" class="pure-button pure-button-primary">Jouer</button>
             </div>
             <div class="col">
                 <div style="display:block;" id="player_menu">
-                    <h2> Players : </h2>
-                    <button type="submit" id="add_player" class="pure-button pure-button-primary">Add a player</button>
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-3">
+                                <button type="submit" id="add_player" class="audiowide_button">Add a
+                                    Player</button>
+                            </div>
+                        </div>
+                    </div>
                     <div class="row" id="player_list"></div>
                     <div class="row" id="highscores"></div>
                 </div>

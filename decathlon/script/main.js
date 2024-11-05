@@ -17,7 +17,7 @@ const addPlayer = () => {
 		document.getElementById("player_list").insertAdjacentHTML(
 			"beforeend",
 			`
-            <div id="${player_id}" class="card" style="width: 18rem; background-color: #${Math.floor(Math.random() * 16777215).toString(16)}">
+            <div id="${player_id}" class="card" style="width: 18rem; background-color: #${Math.floor(Math.random() * 16777215).toString(16)}; margin: 0.3em">
             <div class="card-body">
             <h5 class="card-title"> <strong> ${players[players.length - 1].name} </strong> </h5>
                 <h6 id="${player_id}_score" class="card-subtitle mb-2 text-muted">Score : </h6>
@@ -86,7 +86,7 @@ const setHighScores = async () => {
 	}
 	document
 		.getElementById("highscores")
-		.insertAdjacentHTML("beforeend", "<h2>High scores</h2>");
+		.insertAdjacentHTML("beforeend", "<h2 class='audiowide text-center'>High scores</h2>");
 	for (let i = 0; i < Object.values(ranks).length; i++) {
 		document.getElementById("highscores").insertAdjacentHTML(
 			"beforeend",

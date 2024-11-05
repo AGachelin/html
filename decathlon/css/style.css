@@ -14,3 +14,21 @@
   height: 10em;
 }
 
+.audiowide_classic {
+    font-family: "Audiowide", sans-serif;
+}
+.audiowide {
+    color: black !important;
+    font-family: "Audiowide", sans-serif;
+    text-shadow: -1px 0 lime, 0 1px lime, 1px 0 lime, 0 -1px lime;
+}
+
+.audiowide_button {
+    color: black !important;
+    font-family: "Audiowide", sans-serif;
+    text-shadow: -1px 0 lime, 0 1px lime, 1px 0 lime, 0 -1px lime;
+    background-color: black;
+    font-size: 1.5em;
+
+}
+
