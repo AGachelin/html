@@ -2,6 +2,7 @@ import { Dice } from "./dice.js";
 
 export class Tentative {
     #score;
+    lost_on_odd = false;
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(
         75,
@@ -100,7 +101,7 @@ export class Tentative {
             this.play_turn();
         } 
         // else {
-        //     alert("Your turn is over");
+        //     // alert("Your turn is over");
         // }
     }
     async enable_selector() {
@@ -255,10 +256,15 @@ export class Tentative {
         const lost = this.not_locked_dices.map((dice) => {
             return dice.getValue() % 2 === 1;
         });
-        if (lost.every(Boolean) || this.not_locked_dices.length === 1) {
-            alert("Every dice is odd, you can't play anymore");
+        if (this.not_locked_dices.length === 0) {
             this.is_able_to_play = false;
         }
+        else if(lost.every(Boolean)){
+            alert("Every dice is odd, this try is void");
+            this.is_able_to_play = false;
+            this.lost_on_odd = true;
+        }
+
     }
     clearScene() {
         while (this.scene.children.length > 0) {
