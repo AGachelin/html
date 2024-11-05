@@ -16,10 +16,17 @@ const addPlayer = () => {
 		players.push(player);
 		document.getElementById("player_list").insertAdjacentHTML(
 			"beforeend",
-			`<li id=${player_id}>
-                ${players[players.length - 1].name}    
-                <button id="delete_player${player_id}" class="pure-button pure-button-primary">Supprimer ce joueur</button>
-                </li>`,
+			`
+            <div id="${player_id}" class="card" style="width: 18rem; background-color: #${Math.floor(Math.random() * 16777215).toString(16)}">
+            <div class="card-body">
+            <h5 class="card-title"> <strong> ${players[players.length - 1].name} </strong> </h5>
+                <h6 id="${player_id}_score" class="card-subtitle mb-2 text-muted">Score : </h6>
+                <button id="delete_player${player_id}" class="pure-button pure-button-primary">Supprimer ce
+                    joueur</button>
+
+            </div>
+        </div>
+`,
 		);
 		document
 			.getElementById(`delete_player${player_id}`)
@@ -83,9 +90,14 @@ const setHighScores = async () => {
 	for (let i = 0; i < Object.values(ranks).length; i++) {
 		document.getElementById("highscores").insertAdjacentHTML(
 			"beforeend",
-			`<li>
-        ${ranks[i]}: ${highscores[ranks[i]]}  
-        </li>`,
+			`
+            <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title"> ${ranks[i]} </h5>
+                <h6 class="card-subtitle mb-2 text-muted">Score : ${highscores[ranks[i]]}</h6>
+            </div>
+        </div>
+`,
 		);
 	}
 };
@@ -97,6 +109,8 @@ const playGame = async () => {
 		}
 		console.log(players[i].score_table);
 		players[i].score = Math.max(...players[i].score_table);
+		document.getElementById(`${players[i].id}_score`).innerHTML =
+			`Score : ${players[i].score}`;
 		alert(`Score du joueur ${players[i].name}: ${players[i].score}`);
 	}
 	alert("Partie terminée");
