@@ -11,7 +11,7 @@ export class Player {
     }
     async play() {
             this.current_tentative = new Tentative();
-            if(this.tentative===3){this.tentative=0;}
+            if(this.tentative===3){this.tentative=0;this.score_table=[];}
             this.tentative++;
             await this.current_tentative.init_scene();
             if(this.tentative===1){alert(this.name);}
