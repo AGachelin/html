@@ -14,6 +14,7 @@ export class Player {
             if(this.tentative===3){this.tentative=0;}
             this.tentative++;
             await this.current_tentative.init_scene();
+            if(this.tentative===1){alert(this.name);}
             this.current_tentative.play_turn();
             return this.current_tentative.getScore().then((score) => {
                 this.score = score;
