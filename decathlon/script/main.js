@@ -123,7 +123,6 @@ document.querySelector("#done-button").addEventListener("click", (event) => {
 	document.getElementById("div1").style.display = "block";
 	document.getElementById("player_menu").style.display = "block";
 	document.getElementById("div2").style.display = "none";
-	document.getElementById("throw").style.backgroundColor = "white";
 });
 document.querySelector("#play-button").addEventListener("click", (event) => {
 	if (players.length === 0) {
@@ -132,6 +131,5 @@ document.querySelector("#play-button").addEventListener("click", (event) => {
 	document.getElementById("div1").style.display = "none";
 	document.getElementById("player_menu").style.display = "none";
 	document.getElementById("div2").style.display = "block";
-	document.getElementById("throw").style.backgroundColor = "black";
 	playGame();
 });
