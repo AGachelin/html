@@ -98,9 +98,10 @@ export class Tentative {
             await this.enable_selector();
             await this.end_turn();
             this.play_turn();
-        } else {
-            alert("Your turn is over");
-        }
+        } 
+        // else {
+        //     alert("Your turn is over");
+        // }
     }
     async enable_selector() {
         const onMouse = (event) => {
