@@ -64,7 +64,7 @@ export class Tentative {
             light2.position.set(i - 2, 0.5, 205);
             this.scene.add(light2);
             this.dices[i].cube.traverse((mesh) => {
-                mesh.material = new THREE.MeshPhysicalMaterial({ color: 0x00ff00, rougness: 0.5, metalness : 1});
+                mesh.material = new THREE.MeshPhysicalMaterial({ color: 0x00ff00, roughness: 0.5, metalness : 1});
             });
             this.scene.add(this.dices[i].cube);
         }
