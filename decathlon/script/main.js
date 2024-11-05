@@ -104,6 +104,7 @@ const setHighScores = async () => {
 
 const playGame = async () => {
 	for (let i = 0; i < players.length; i++) {
+		players[i].tentative = 0;
 		for (let j = 0; j < 3; j++) {
 			await players[i].play();
 		}
