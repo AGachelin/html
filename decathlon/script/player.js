@@ -11,6 +11,7 @@ export class Player {
     }
     async play() {
             this.current_tentative = new Tentative();
+            if(this.tentative===3){this.tentative=0;}
             this.tentative++;
             await this.current_tentative.init_scene();
             this.current_tentative.play_turn();
