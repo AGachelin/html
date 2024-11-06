@@ -1,4 +1,5 @@
-Ce repository contient divers projets de développement web.  
-Il y en a à ce jour deux :  
-- le "site du ginfo" contient un mini projet exécuté durant des formations associatives, et avait pour seul objectif de découvrir le développement web.  
-- le "site devweb" sera développé tout au long du semestre. C'est un projet exécuté dans le cadre d'une unité d'enseignement.
+Ce repository contient divers projets de développement web. 
+Le dossier "decathlon" contient un mini jeu à base de dés. Le site est dynamique et ne contient pas de backend. Il est programmé en html, css et javascript avec la librairie Three.js.  
+Concernant les autres dossiers :  
+- "html" contient un mini projet exécuté durant des formations associatives, et avait pour seul objectif de découvrir le développement web.  
+- "site test" contient un site utilisé pour apprendre les bases du développement front durant une unité d'enseignement. De même, le dossier "numérologie" contient un mini projet ayant servi à apprendre des bases de javascript.
