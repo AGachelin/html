@@ -5,7 +5,7 @@ import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 export default function Home() {
   return (
     <div id="div1">
-        <h1 className="text-center audiowide"> Lancer de disque </h1>
+        <h1 className="text-center audiowide" style="font-size: 4em"> Lancer de disque </h1>
         <div className="row">
             <div className="col">
                 <div className="container">
@@ -15,13 +15,13 @@ export default function Home() {
                         </div>
                     </div>
                 </div>
-                <h2 className="row justify-content-center" style={{margin: "1em"}}>
+                <h2 className="row justify-content-center" style="margin: 1em">
                     <button type="submit" className="audiowide_button" data-bs-toggle="collapse" href="#rulesText"
                         aria-expanded="false" aria-controls="rulesText">
                         Règles du jeu
                     </button>
                 </h2>
-                <div className="collapse audiowide_classNameic" id="rulesText" style={{backgroundColor: white, fontWeight: "1000", border: "5px"}}>
+                <div className="collapse audiowide_classNameic" id="rulesText" style="background-color: white; font-weight: 1000; border: 5px solid lime;">
                     Commencez par lancer les 5 dés. Écartez alors au moins un dé. Si
                     vous le désirez, relancez tous les
                     autres.
@@ -41,7 +41,7 @@ export default function Home() {
                     impaire, vous avez échoué dans votre tentative.</div>
             </div>
             <div className="col">
-                <div style={{display:block}}>
+                <div style="display:block;" id="player_menu">
                     <div className="container">
                         <div className="row justify-content-center">
                             <div className="col-3">
@@ -66,5 +66,7 @@ export default function Home() {
         </div>
     </div>
     </div>
+
+
   );
 }
