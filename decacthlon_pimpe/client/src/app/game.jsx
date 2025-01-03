@@ -22,7 +22,7 @@ async function addPlayer() {
 				name:player_name
 			}),
 		}).then(response=>response.json());
-		players.push(player);
+		players.push(new Player(player.name, player.id));
 	}
 	return player;
 };
