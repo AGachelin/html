@@ -1,6 +1,5 @@
 "use client";
 
-
 import PlayerCard from "./player_card/player_card.jsx";
 import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import { useState } from 'react';
@@ -8,6 +7,7 @@ import game from "./game";
 
 export default function Home() {
   const [players, setPlayers] = useState([]);
+  game.getPlayers().then(playerList => setPlayers(playerList));
   return (
     <div id="div1">
         <h1 className="text-center audiowide"> Lancer de disque </h1>
@@ -16,7 +16,7 @@ export default function Home() {
                 <div className="container">
                     <div className="row justify-content-center">
                         <div className="col-1">
-                            <button type="submit" id="play-button" className="audiowide_button">Play</button>
+                            <button type="submit" id="play-button" onClick={game.playGame} className="audiowide_button">Play</button>
                         </div>
                     </div>
                 </div>
@@ -50,7 +50,7 @@ export default function Home() {
                     <div className="container">
                         <div className="row justify-content-center">
                             <div className="col-3">
-                                <button type="submit" id="add_player" onClick= {() => {game.addPlayer().then(player => setPlayers(players => [...players, player]))}} className="audiowide_button">Add a
+                                <button type="submit" id="add_player" onClick= {() => {game.addPlayer(players.length).then(player => setPlayers(players => [...players, player]))}} className="audiowide_button">Add a
                                     Player</button>
                             </div>
                         </div>

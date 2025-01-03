@@ -5,12 +5,24 @@ import { HighScoreBoard } from "./player_card/highscore.jsx";
 const highscores = {};
 const ranks = {};
 const ranks_reversed = {};
-const players = [];
 
-async function addPlayer() {
+async function getPlayers(){
+	var players = [];
+	await fetch(
+		"http://localhost:4444/Players"
+	).then(
+		response=>response.json()
+	).then(
+		playerList=> playerList.map(p=> players.push(new Player(p.name, p.id)))
+	)
+	return players;
+}
+
+async function addPlayer(num) {// ajouter gestion cancel
+	getPlayers();
 	const player_name = window.prompt(
-		`Nom du joueur ${players.length + 1} :`,
-		`Player ${players.length + 1}`,
+		`Nom du joueur ${num + 1} :`,
+		`Player ${num + 1}`,
 	);
 	if (player_name !== null) {
 		var player = await fetch("http://localhost:4444/api/create", {
@@ -22,9 +34,8 @@ async function addPlayer() {
 				name:player_name
 			}),
 		}).then(response=>response.json());
-		players.push(new Player(player.name, player.id));
 	}
-	return player;
+	return new Player(player.name, player.id);
 };
 
 async function setHighScores (){
@@ -101,6 +112,7 @@ export default{
 	addPlayer:addPlayer,
 	playGame:playGame,
 	setHighScores:setHighScores,
+	getPlayers:getPlayers
 }
 // window.querySelector("#done-button").addEventListener("click", (event) => {
 // 	window.getElementById("div1").style.display = "block";
