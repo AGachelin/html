@@ -59,12 +59,12 @@ app.get("/Players/:id",async (req, res) => {
 	}
 });
 
-app.post("/api/create", (req, res) => {
+app.post("/api/create", async (req, res) => {
     console.log(req.body);
 	try {
         const { name } = req.body;
 		res.statusCode = 200;
-		res.json(api.newPlayer(name));
+		res.json(await api.newPlayer(name));
 	} catch (e) {
 		res.statusCode = 500;
 		console.log(e);
@@ -97,7 +97,7 @@ app.post("/api/update",async (req, res) => {
 });
 
 app.use("/api/delete",async (req, res) => {
-    const id = req.query.id;
+    const {id}= req.body;
 	try {
 		res.json(await api.deletePlayer(id));
 	} catch (e) {

@@ -1,8 +1,13 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+
+
+import PlayerCard from "./player_card/player_card.jsx";
 import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
+import { useState } from 'react';
+import game from "./game";
 
 export default function Home() {
+  const [players, setPlayers] = useState([]);
   return (
     <div id="div1">
         <h1 className="text-center audiowide"> Lancer de disque </h1>
@@ -21,7 +26,7 @@ export default function Home() {
                         Règles du jeu
                     </button>
                 </h2>
-                <div className="collapse audiowide_classNameic" id="rulesText" style={{backgroundColor: white, fontWeight: "1000", border: "5px"}}>
+                <div className="collapse audiowide_classNameic" id="rulesText" style={{backgroundColor: "white", fontWeight: "1000", border: "5px"}}>
                     Commencez par lancer les 5 dés. Écartez alors au moins un dé. Si
                     vous le désirez, relancez tous les
                     autres.
@@ -41,16 +46,16 @@ export default function Home() {
                     impaire, vous avez échoué dans votre tentative.</div>
             </div>
             <div className="col">
-                <div style={{display:block}}>
+                <div style={{display:"block"}}>
                     <div className="container">
                         <div className="row justify-content-center">
                             <div className="col-3">
-                                <button type="submit" id="add_player" className="audiowide_button">Add a
+                                <button type="submit" id="add_player" onClick= {() => {game.addPlayer().then(player => setPlayers(players => [...players, player]))}} className="audiowide_button">Add a
                                     Player</button>
                             </div>
                         </div>
                     </div>
-                    <div className="row" id="player_list"/>
+                    <div className="row container" id="player_list">{players.map(player => <PlayerCard name={player.name} player_id={player.id} key={player.id} player_score={"0"} remove={() => setPlayers(players.filter(p => p.id !== player.id))}/>)}</div>
                     <div className="row" id="highscores"/>
                 </div>
             </div>

@@ -1,30 +1,34 @@
 import { Player } from "./objects/player.js";
-import { PlayerCard } from "./player_card/player_card.jsx";
 import { HighScoreBoard } from "./player_card/highscore.jsx";
+
 
 const highscores = {};
 const ranks = {};
 const ranks_reversed = {};
-
-let player_id = 0;
 const players = [];
-const addPlayer = () => {
-	const player_name = prompt(
+
+async function addPlayer() {
+	const player_name = window.prompt(
 		`Nom du joueur ${players.length + 1} :`,
 		`Player ${players.length + 1}`,
 	);
 	if (player_name !== null) {
-		const player = new Player(player_name, player_id);
+		var player = await fetch("http://localhost:4444/api/create", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				name:player_name
+			}),
+		}).then(response=>response.json());
 		players.push(player);
 	}
-    player_id++
-    return (
-        <PlayerCard players={players} player_id={player_id} player_score={player.score} />
-    )
+	return player;
 };
 
-const setHighScores = async () => {
-	document.getElementById("highscores").innerHTML = "";
+async function setHighScores (){
+	window.getElementById("highscores").innerHTML = "";
 	for (const player of players) {
 		console.log(ranks, highscores, ranks_reversed);
 		if (player.name in highscores) {
@@ -74,7 +78,7 @@ const setHighScores = async () => {
     );
 };
 
-const playGame = async () => {
+async function playGame () {
 	for (let i = 0; i < players.length; i++) {
 		players[i].tentative = 0;
 		for (let j = 0; j < 3; j++) {
@@ -86,26 +90,29 @@ const playGame = async () => {
 	}
 	alert("Partie terminée");
 	await setHighScores();
-	document.querySelector("#done-button").dispatchEvent(new MouseEvent("click"));
+	window.querySelector("#done-button").dispatchEvent(new MouseEvent("click"));
     return (
         <div>
             Score : {players[i].score}
         </div>
     );
 };
-
-document.getElementById("add_player").onclick = addPlayer;
-document.querySelector("#done-button").addEventListener("click", (event) => {
-	document.getElementById("div1").style.display = "block";
-	document.getElementById("player_menu").style.display = "block";
-	document.getElementById("div2").style.display = "none";
-});
-document.querySelector("#play-button").addEventListener("click", (event) => {
-	if (players.length === 0) {
-		return alert("Please add a player before playing the game");
-	}
-	document.getElementById("div1").style.display = "none";
-	document.getElementById("player_menu").style.display = "none";
-	document.getElementById("div2").style.display = "block";
-	playGame();
-});
+export default{
+	addPlayer:addPlayer,
+	playGame:playGame,
+	setHighScores:setHighScores,
+}
+// window.querySelector("#done-button").addEventListener("click", (event) => {
+// 	window.getElementById("div1").style.display = "block";
+// 	window.getElementById("player_menu").style.display = "block";
+// 	window.getElementById("div2").style.display = "none";
+// });
+// window.querySelector("#play-button").addEventListener("click", (event) => {
+// 	if (players.length === 0) {
+// 		return alert("Please add a player before playing the game");
+// 	}
+// 	window.getElementById("div1").style.display = "none";
+// 	window.getElementById("player_menu").style.display = "none";
+// 	window.getElementById("div2").style.display = "block";
+// 	playGame();
+// });

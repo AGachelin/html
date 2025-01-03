@@ -1,12 +1,12 @@
 import db from "./db.js";
 
 async function newPlayer(name) {
-	await db.model.Players.create({
+	var Player = await db.model.Players.create({
 		name: name
 	});
+	Player = Player.dataValues;
 	return {
-		message: "Player created",
-		status: 200,
+		id: Player.id,
 		name: name
 	};
 }
@@ -17,8 +17,6 @@ async function newScore(player, score) {
 		score: score
 	});
 	return {
-		message: "Score added",
-		status: 200,
 		player: player,
 		score: score
 	};
@@ -36,8 +34,6 @@ async function updatePlayer(id, name) {
 		name: name
     });
     return {
-        message: "Player updated",
-        status: 200,
         id: id,
 		name: name
     };
@@ -48,8 +44,6 @@ async function deletePlayer(id) {
 	const data = await db.model.Players.findByPk(id);
 	await data.destroy();
 	return {
-		message: "Player deleted",
-		status: 200,
 		id: id,
 	};
 }
