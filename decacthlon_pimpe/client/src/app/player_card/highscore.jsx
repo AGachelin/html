@@ -1,15 +1,15 @@
 export default function HighScoreBoard(props) {
-    const { ranks, highscores } = props;
+    const {highscores} = props;
     return (
         <div>
             <h1>High Score</h1>
-        {ranks.map((rank, i) => {
+        {highscores.map(s => {
             return (
-                <div key={i}>
+                <div key={s.rank}>
                     <div className="card" style={{width: "10rem", opacity: 0.5}}>
                         <div className="card-body">
-                            <h5 className="card-title"> {ranks[i]} </h5>
-                            <h6 className="card-subtitle mb-2 text-muted">Score : {highscores[ranks[i]]}</h6>
+                            <h5 className="card-title"> {s.player} </h5>
+                            <h6 className="card-subtitle mb-2 text-muted">Score : {s.score}</h6>
                         </div>
                     </div>
                 </div>

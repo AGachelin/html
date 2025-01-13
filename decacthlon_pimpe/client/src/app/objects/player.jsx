@@ -1,4 +1,4 @@
-import { Tentative } from "./tentative.js";
+import { Tentative } from "./tentative.jsx";
 
 export class Player {
     constructor(name, id) {

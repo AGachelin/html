@@ -4,19 +4,23 @@ import PlayerCard from "./player_card/player_card.jsx";
 import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import { useState } from 'react';
 import game from "./game";
+import { Canvas } from '@react-three/fiber/'
 
 export default function Home() {
   const [players, setPlayers] = useState([]);
+  const [div2, setDiv2] = useState("none");
+  const [div1, setDiv1] = useState("block");
   game.getPlayers().then(playerList => setPlayers(playerList));
   return (
-    <div id="div1">
+    <div>
+    <div id="div1" style={{display:div1}}>
         <h1 className="text-center audiowide"> Lancer de disque </h1>
         <div className="row">
             <div className="col">
                 <div className="container">
                     <div className="row justify-content-center">
                         <div className="col-1">
-                            <button type="submit" id="play-button" onClick={game.playGame} className="audiowide_button">Play</button>
+                            <button type="submit" id="play-button" onClick={() => {game.playGame(players); setDiv2("block"); setDiv1("none")}} className="audiowide_button">Play</button>
                         </div>
                     </div>
                 </div>
@@ -60,8 +64,9 @@ export default function Home() {
                 </div>
             </div>
         </div>
-    <div id="div2" style={{display:'none'}}>
-        <canvas id="canvas"/>
+    </div>
+    <div id="div2" style={{display:div2}}>
+        <Canvas id="canvas"/>
         <div id="buttons">
             <button type="submit" id="done-button" className="pure-button pure-button-primary">Terminer la
                 partie</button>

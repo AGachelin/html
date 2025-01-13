@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
 import api from "./app.js";
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const app = express();
 
@@ -9,6 +11,11 @@ const port = 4444;
 
 app.use(cors());
 app.use(express.json());
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.use('/models', express.static(path.join(__dirname, 'models')));
 
 app.get("/Players", async (req, res) => {
 	try {
@@ -107,11 +114,6 @@ app.use("/api/delete",async (req, res) => {
 	}
 });
 
-app.use((req, res) => {
-	res.statusCode = 404;
-	res.setHeader("Content-Type", "text/html; charset=utf-8");
-	res.end("Not found");
-});
 
 app.listen(port, hostname);
 console.log(`Server running at http://${hostname}:${port}/`);

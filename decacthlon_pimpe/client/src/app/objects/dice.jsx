@@ -1,3 +1,7 @@
+import * as THREE from 'three/src/Three.js';
+// "./node_modules/three/examples/js/controls/OrbitControls.js"
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
+
 export class Dice {
 	#value;
 	cube;
@@ -23,9 +27,9 @@ export class Dice {
 			};
 
 			this.manager = new THREE.LoadingManager(loadModel);
-			const loader = new THREE.OBJLoader(this.manager);
+			const loader = new OBJLoader(this.manager);
 			loader.load(
-				"./models/Dicev4.obj",
+				"http://127.0.0.1:4444/models/Dicev4.obj",
 				(obj) => {
 					this.cube = obj;
 				},
