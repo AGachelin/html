@@ -50,8 +50,9 @@ export class Dice {
 				return [0, (1 * Math.PI) / 2];
 		}
 	}
-	throw() {
-		this.#value = Math.floor(Math.random() * 6) + 1;
+	async throw() {
+		this.#value = await fetch("http://localhost:4444/Players/dice_throw").then((res) => res.json()).then((data) => data.value);
+        console.log(this.#value);
 		return this.#value;
 	}
 	getValue() {

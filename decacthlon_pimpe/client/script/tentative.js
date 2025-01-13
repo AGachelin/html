@@ -74,8 +74,9 @@ export class Tentative {
         document.getElementById("end_turn").onclick = () => {
             this.is_able_to_play = false;
         };
-        this.not_locked_dices.map((dice) => {
-            dice.throw();
+        await this.not_locked_dices.map(async (dice) => {
+            await dice.throw();
+            console.log("diplayed value",dice.getValue());
             const goal = dice.getGoalRotation();
             dice.cube.rotation.x = goal[0];
             dice.cube.rotation.y = goal[1];
@@ -202,7 +203,7 @@ export class Tentative {
                 this.permanently_locked.push(dice);
             });
             this.locked_dices = [];
-            this.not_locked_dices.map((dice) => dice.throw());
+            this.not_locked_dices.map(async (dice) => await dice.throw());
             const anim_end = new Array(this.not_locked_dices.length).fill(false);
             let n = 0;
             while (n < 2 && !anim_end.every(Boolean)) {

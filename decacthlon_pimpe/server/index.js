@@ -22,6 +22,20 @@ app.get("/Players", async (req, res) => {
 	}
 });
 
+app.get("/Players/dice_throw", async (req, res) => {
+    try {
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "text/html; charset=utf-8");
+        res.json({
+            value: Math.floor(Math.random() * 6) + 1
+        })
+    } catch (e) {
+        res.statusCode = 500;
+        console.log(e);
+        res.end("Internal server error");
+    }
+});
+
 app.get("/Scores", async (req, res) => {
 	try {
 		res.statusCode = 200;
