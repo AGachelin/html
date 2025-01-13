@@ -1,5 +1,5 @@
 import { Dice } from "./dice.js";
-import THREE from "three";
+
 export class Tentative {
     #score;
     lost_on_odd = false;

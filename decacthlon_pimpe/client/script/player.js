@@ -24,4 +24,7 @@ export class Player {
                 }
             });
         }
+    destructor(){
+        document.getElementById(String(this.id)).outerHTML = "";
+    }
     }

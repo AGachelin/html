@@ -1,0 +1,42 @@
+#c {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: -1;
+}
+
+#dicethrow {
+  display: inline-block;
+  width: 50em;
+  height: 10em;
+}
+
+.audiowide_classic {
+    font-family: "Audiowide", sans-serif;
+}
+.audiowide {
+    color: black !important;
+    font-family: "Audiowide", sans-serif;
+    text-shadow: -1px 0 lime, 0 1px lime, 1px 0 lime, 0 -1px lime;
+}
+
+.audiowide_button {
+    color: black !important;
+    font-family: "Audiowide", sans-serif;
+    text-shadow: -1px 0 lime, 0 1px lime, 1px 0 lime, 0 -1px lime;
+    background-color: black;
+    font-size: 1.5em;
+
+}
+
+.bg {
+  background-image: url("../images/image.png");
+  height: 100%;
+  background-color: black;
+  background-position: bottom 10px;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
