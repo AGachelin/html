@@ -111,7 +111,7 @@ app.post("/api/update",async (req, res) => {
 });
 
 app.use("/api/delete",async (req, res) => {
-    const {id}= req.body;
+    const { id }= req.body;
 	try {
 		res.json(await api.deletePlayer(id));
 	} catch (e) {
