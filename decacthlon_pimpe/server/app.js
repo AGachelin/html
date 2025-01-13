@@ -55,8 +55,8 @@ async function getPlayers() {
 	});
 }
 
-async function getScores() {
-	const data = await db.model.HighScores.findAll();
+async function getScores(player) {
+	const data = await db.model.HighScores.findAll({where:{"player":`${player}`}});
 	return data.map((Score) => {
 		return Score.toJSON();
 	});

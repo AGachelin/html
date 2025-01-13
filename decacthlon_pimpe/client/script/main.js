@@ -65,7 +65,8 @@ const displayPlayers = () => {
             <div id="${player.id}" class="card" style="width: 18rem; background-color: #${Math.floor(Math.random() * 16777215).toString(16)}; margin: 0.3em">
             <div class="card-body">
             <h5 class="card-title"> <strong> ${player.name} </strong> </h5>
-                <h6 id="${player.id}_score" class="card-subtitle mb-2 text-muted">Score : </h6>
+                <h6 class="card-subtitle mb-2 text-muted">Scores : </h6>
+				<div id="${player.id}_score"/>
                 <button id="delete_player${player.id}" class="pure-button pure-button-primary">Supprimer ce
                     joueur</button>
 
@@ -88,11 +89,22 @@ const displayPlayers = () => {
 			});
         
     });
-    setHighScores();
 }
 
-const updateHighScores = async () => {
-    //TODO:
+const setHighScores = async () => {
+	document.getElementById("highscores").innerHTML = "";
+	await displayHighScores();
+	await players.map(async (player) => {
+		var scores = await fetch(`http://localhost:4444/Scores/${player.id}`).then((res) => res.json());
+		document.getElementById(`${player.id}_score`).innerHTML = '';
+		console.log(scores);
+		for(const score in scores){
+			var score_item = document.createElement('li');
+			score_item.innerHTML = scores[score].score;
+			document.getElementById(`${player.id}_score`).appendChild(score_item);
+		}
+	}
+	)
 }
 
 const displayHighScores = async () => {
@@ -102,6 +114,7 @@ const displayHighScores = async () => {
             "Content-Type": "application/json",
         },
     }).then((res) => res.json());
+	document.getElementById("highscores").innerHTML = "";
     highscores.map((score) => {
         document.getElementById("highscores").insertAdjacentHTML(
             "beforeend",
@@ -124,8 +137,8 @@ const playGame = async () => {
 		}
 		console.log(players[i].score_table);
 		players[i].score = Math.max(...players[i].score_table);
-		document.getElementById(`${players[i].id}_score`).innerHTML =
-			`Score : ${players[i].score}`;
+		// document.getElementById(`${players[i].id}_score`).innerHTML =
+		// 	`Score : ${players[i].score}`;
 		alert(`Score du joueur ${players[i].name}: ${players[i].score}`);
 	}
 	alert("Partie terminée");
@@ -134,7 +147,7 @@ const playGame = async () => {
 };
 
 displayPlayers();
-displayHighScores();
+setHighScores();
 document.getElementById("add_player").onclick = addPlayer;
 document.querySelector("#done-button").addEventListener("click", (event) => {
 	document.getElementById("div1").style.display = "block";

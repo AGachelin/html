@@ -36,11 +36,11 @@ app.get("/Players/dice_throw", async (req, res) => {
     }
 });
 
-app.get("/Scores", async (req, res) => {
+app.get("/Scores/:id", async (req, res) => {
 	try {
 		res.statusCode = 200;
 		res.setHeader("Content-Type", "text/html; charset=utf-8");
-		res.json(await api.getScores());
+		res.json(await api.getScores(req.params.id));
 	} catch (e) {
 		res.statusCode = 500;
 		console.log(e);
