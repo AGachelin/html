@@ -6,9 +6,16 @@ const app = express();
 
 const hostname = "127.0.0.1";
 const port = 4444;
+let key = Math.random().toString(16);
 
 app.use(cors());
 app.use(express.json());
+
+app.get("/key", (req, res) => {
+	res.statusCode = 200;
+	res.setHeader("Content-Type", "text/html; charset=utf-8");
+	res.end(key);
+});
 
 app.get("/Players", async (req, res) => {
 	try {
@@ -71,6 +78,13 @@ app.get("/Players/:id",async (req, res) => {
 		console.log(e);
 		res.end("Internal server error");
 	}
+});
+
+app.post("/key", (req, res) => {
+	key = req.body.key;
+	res.statusCode = 200;
+	res.setHeader("Content-Type", "text/html; charset=utf-8");
+	res.end("key updated");
 });
 
 app.post("/api/create", async (req, res) => {

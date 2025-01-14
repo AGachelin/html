@@ -10,7 +10,13 @@ const players = await fetch("http://127.0.0.1:4444/Players").then((res) => res.j
 		return p;
 	}));
 });
+
+
 const addPlayer = async () => {
+	if(!document.cookie.includes("admin") || key===0 || !document.cookie.includes(key)){
+		alert("You must be logged in as an admin to add a player");
+		return;
+	}
 	const player_name = prompt(
 		`Nom du joueur ${players.length + 1} :`,
 		`Player ${players.length + 1}`,
@@ -44,6 +50,11 @@ const addPlayer = async () => {
 		document
 			.getElementById(`delete_player${player.id}`)
 			.addEventListener("click", () => {
+				if(!document.cookie.includes("admin") || key===0 || !document.cookie.includes(key)){
+					alert("You must be logged in as an admin to delete a player");
+					return;
+				}
+				else{
 				player.destructor();
 				players.splice(players.indexOf(player), 1);
                 fetch('http://127.0.0.1:4444/api/delete', {
@@ -53,7 +64,7 @@ const addPlayer = async () => {
                     },
                     body: JSON.stringify({ id: player.id }),
                 });
-			});
+			}});
 	}
 };
 
@@ -78,17 +89,22 @@ const displayPlayers = () => {
 		);
 		document
 			.getElementById(`delete_player${player.id}`)
-			.addEventListener("click", async () => {
+			.addEventListener("click", () => {
+				if(!document.cookie.includes("admin") || key===0 || !document.cookie.includes(key)){
+					alert("You must be logged in as an admin to delete a player");
+					return;
+				}
+				else{
 				player.destructor();
-                await fetch('http://127.0.0.1:4444/api/delete', {
+				players.splice(players.indexOf(player), 1);
+                fetch('http://127.0.0.1:4444/api/delete', {
                     method: "DELETE",
                     headers: {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({ id: player.id }),
                 });
-				players.splice(players.indexOf(player), 1);
-			});
+			}});
         
     });
 }
@@ -156,6 +172,42 @@ const playGame = async () => {
 	document.querySelector("#done-button").dispatchEvent(new MouseEvent("click"));
 };
 
+const login = async () => {
+	const password = prompt("Enter the password");
+	if (password === "admin") {
+		document.getElementById("log-in").style.display = "none";
+		document.getElementById("log-out").style.display = "block";
+		key = Math.random().toString(16);
+		await fetch("http://localhost:4444/key", {
+			method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ key: key }),
+        }).then(document.cookie = `admin=${key}; max-age=300`);
+	} else {
+		alert("Wrong password");
+	}
+}
+
+const logout = () => {
+	document.getElementById("log-out").style.display = "none";
+	document.getElementById("log-in").style.display = "block";
+	document.cookie = 'admin=; max-age=-1';
+}
+
+let key = await fetch("http://localhost:4444/key").then((res) => res.text()).then((key)=>{
+	if(!document.cookie.includes("admin") || key===0 || !document.cookie.includes(key)){
+		logout();
+		return "0";
+	}
+	else{
+		document.getElementById("log-in").style.display = "none";
+		document.getElementById("log-out").style.display = "block";
+		return key;
+	}
+})
+
 displayPlayers();
 setHighScores();
 document.getElementById("add_player").onclick = addPlayer;
@@ -173,3 +225,5 @@ document.querySelector("#play-button").addEventListener("click", (event) => {
 	document.getElementById("div2").style.display = "block";
 	playGame();
 });
+document.getElementById("log-in").onclick = login
+document.getElementById("log-out").onclick = logout
