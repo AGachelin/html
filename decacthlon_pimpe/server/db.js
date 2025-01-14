@@ -25,6 +25,10 @@ const HighScores = db.define("HighScores", {
     player: {
         type: DataTypes.STRING,
         allowNull: false,
+    },
+    PlayerId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
     }
 });
 
@@ -40,11 +44,6 @@ const Players = db.define("Players", {
         allowNull: false,
     }
 });
-
-Players.hasMany(HighScores, {
-    foreignKey: 'player',
-  });
-HighScores.belongsTo(Players);
 
 export default {
     db: db,

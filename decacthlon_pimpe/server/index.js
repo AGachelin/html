@@ -89,9 +89,9 @@ app.post("/api/create", async (req, res) => {
 app.post("/api/score", (req, res) => {
     console.log(req.body);
 	try {
-        const { player, score } = req.body;
+        const { player, playerid, score } = req.body;
 		res.statusCode = 200;
-		res.json(api.newScore(player, score));
+		res.json(api.newScore(player, playerid, score));
 	} catch (e) {
 		res.statusCode = 500;
 		console.log(e);

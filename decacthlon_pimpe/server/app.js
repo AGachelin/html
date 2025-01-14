@@ -11,10 +11,11 @@ async function newPlayer(name) {
 	};
 }
 
-async function newScore(player, score) {
+async function newScore(player, playerid, score) {
 	await db.model.HighScores.create({
-		player: player,
-		score: score
+		'player': player,
+		'PlayerId': playerid,
+		'score': score
 	});
 	return {
 		player: player,
@@ -56,14 +57,14 @@ async function getPlayers() {
 }
 
 async function getScores(player) {
-	const data = await db.model.HighScores.findAll({where:{"player":`${player}`}});
+	const data = await db.model.HighScores.findAll({where:{"playerid":`${player}`}});
 	return data.map((Score) => {
 		return Score.toJSON();
 	});
 }
 
 async function getHighScores() {
-	const data = await db.model.HighScores.findAll({order: [['score', 'DESC']], limit: 10});
+	const data = await db.model.HighScores.findAll({order: [['score', 'DESC']], limit: 6});
 	return data.map((Score) => {
 		return Score.toJSON();
 	});

@@ -1,15 +1,14 @@
 import { Player } from "./player.js";
 
-const highscores = {};
-const ranks = {};
-const ranks_reversed = {};
-
-const players = await fetch("http://127.0.0.1:4444/Players").then((res) => res.json()).then((data) => {;
-    return data.map((player) => {
-        const p = new Player(player.name, player.id);
-        console.log(player);
-        return p;
-    });
+const players = await fetch("http://127.0.0.1:4444/Players").then((res) => res.json()).then(async (data) => {;
+	return await Promise.all(data.map(async (player) => {
+		const p = new Player(player.name, player.id);
+		await fetch(`http://localhost:4444/Scores/${player.id}`)
+			.then((res) => res.json())
+			.then((scores) => {console.log(scores);p.score = Math.max(...scores.map(score=>score.score));});
+		console.log(p);
+		return p;
+	}));
 });
 const addPlayer = async () => {
 	const player_name = prompt(
@@ -32,7 +31,9 @@ const addPlayer = async () => {
             <div id="${player.id}" class="card" style="width: 18rem; background-color: #${Math.floor(Math.random() * 16777215).toString(16)}; margin: 0.3em">
             <div class="card-body">
             <h5 class="card-title"> <strong> ${player.name} </strong> </h5>
-                <h6 id="${player.id}_score" class="card-subtitle mb-2 text-muted">Score : </h6>
+			    <h6 id="${player.id}_highscore" class="card-subtitle mb-2 text-muted">Highscore : ${player.score | 0} </h6>
+                <h6 class="card-subtitle mb-2 text-muted">All scores : </h6>
+				<div id="${player.id}_score"></div>
                 <button id="delete_player${player.id}" class="pure-button pure-button-primary">Supprimer ce
                     joueur</button>
 
@@ -65,8 +66,9 @@ const displayPlayers = () => {
             <div id="${player.id}" class="card" style="width: 18rem; background-color: #${Math.floor(Math.random() * 16777215).toString(16)}; margin: 0.3em">
             <div class="card-body">
             <h5 class="card-title"> <strong> ${player.name} </strong> </h5>
-                <h6 class="card-subtitle mb-2 text-muted">Scores : </h6>
-				<div id="${player.id}_score"/>
+			    <h6 id="${player.id}_highscore" class="card-subtitle mb-2 text-muted">Highscore : ${player.score | 0} </h6>
+                <h6 class="card-subtitle mb-2 text-muted">All scores : </h6>
+				<div id="${player.id}_score"></div>
                 <button id="delete_player${player.id}" class="pure-button pure-button-primary">Supprimer ce
                     joueur</button>
 
@@ -95,11 +97,11 @@ const setHighScores = async () => {
 	document.getElementById("highscores").innerHTML = "";
 	await displayHighScores();
 	await players.map(async (player) => {
-		var scores = await fetch(`http://localhost:4444/Scores/${player.id}`).then((res) => res.json());
+		const scores = await fetch(`http://localhost:4444/Scores/${player.id}`).then((res) => res.json());
 		document.getElementById(`${player.id}_score`).innerHTML = '';
 		console.log(scores);
 		for(const score in scores){
-			var score_item = document.createElement('li');
+			const score_item = document.createElement('li');
 			score_item.innerHTML = scores[score].score;
 			document.getElementById(`${player.id}_score`).appendChild(score_item);
 		}
@@ -121,7 +123,7 @@ const displayHighScores = async () => {
             `
             <div class="card" style="width: 18rem; opacity: 0.5 !important;">
             <div class="card-body">
-                <h5 class="card-title"> ${score.player} </h5>
+                <h5 class="card-title"> ${score.player} #${score.PlayerId} </h5>
                 <h6 class="card-subtitle mb-2 text-muted">Score : ${score.score}</h6>
             </div>
         </div>
@@ -132,13 +134,21 @@ const displayHighScores = async () => {
 const playGame = async () => {
 	for (let i = 0; i < players.length; i++) {
 		players[i].tentative = 0;
+		players[i].score_table = [];
 		for (let j = 0; j < 3; j++) {
 			await players[i].play();
 		}
 		console.log(players[i].score_table);
-		players[i].score = Math.max(...players[i].score_table);
-		// document.getElementById(`${players[i].id}_score`).innerHTML =
-		// 	`Score : ${players[i].score}`;
+		await fetch('http://localhost:4444/api/score', {            
+			method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ player: players[i].name, playerid: players[i].id, score: Math.max(...players[i].score_table) }),
+        }).then((res) => res.json());
+		players[i].score = Math.max(...players[i].score_table, players[i].score);
+		document.getElementById(`${players[i].id}_highscore`).innerHTML =
+			`Highscore : ${players[i].score}`;
 		alert(`Score du joueur ${players[i].name}: ${players[i].score}`);
 	}
 	alert("Partie terminée");
